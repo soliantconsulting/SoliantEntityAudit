@@ -2,7 +2,7 @@
 <phpunit colors="true">
     <testsuites>
         <testsuite name="Entity Audit Tests">
-            <directory>./test/SoliantEntityAuditTest</directory>
+            <directory>./tests/SoliantEntityAudit</directory>
         </testsuite>
     </testsuites>
 </phpunit>
