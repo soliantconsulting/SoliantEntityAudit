@@ -1,7 +1,7 @@
 SoliantEntityAudit
 ==============
 
-An auditing module for Doctrine 2.  Requires ZfcUser to map revisions to users.
+An auditing module for Doctrine 2.  Requires ZfcUser to map revisions to users.  This module creates an entity to audit a specified target entity and tracks revisions to that target.
 
 
 About
@@ -95,14 +95,10 @@ Identifier column values from the audited entity will be added to defaults to ge
 This is how to map from your application to it's current revision entity:
 
 ```
-    <?php
-    $currentRevisionEntity = $this->auditCurrentRevisionEntity($auditedEntity);
-    ?>
-
     <a class="btn btn-info" href="<?=
         $this->url('audit/revision-entity',
             array(
-                'revisionEntityId' => $currentRevisionEntity->getId()
+                'revisionEntityId' => $this->auditCurrentRevisionEntity($auditedEntity)->getId()
             )
         );
     ?>">
