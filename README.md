@@ -71,7 +71,7 @@ Routing
 To map a route to an audited entity include route information in the audit => entities config
 
 ```
-    'Db\Entity\song' => array(
+    'Db\Entity\Song' => array(
         'route' => 'default',
         'defaults' => array(
             'controller' => 'song',
@@ -96,7 +96,7 @@ This is how to map from your application to it's current revision entity:
 
 ```
     <?php
-    $currentRevisionEntity = $this->auditCurrentRevisionEntity($this->song);
+    $currentRevisionEntity = $this->auditCurrentRevisionEntity($auditedEntity);
     ?>
 
     <a class="btn btn-info" href="<?=
