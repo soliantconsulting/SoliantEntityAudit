@@ -131,7 +131,15 @@ class AuditAutoloader extends StandardAutoloader
         $setters = array();
         foreach ($fields as $fieldName) {
             $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
+            $arrayCopy[] = "    \"$fieldName\"" . ' => $this->' . $fieldName;
         }
+
+        $auditClass->addMethod(
+            'getArrayCopy',
+            array('data'),
+            MethodGenerator::FLAG_PUBLIC,
+            "return array(\n" . implode(",\n", $arrayCopy) . "\n);"
+        );
 
         $auditClass->addMethod(
             'exchangeArray',
@@ -152,8 +160,8 @@ class AuditAutoloader extends StandardAutoloader
         $auditClass->setName(str_replace('\\', '_', $currentClass));
         $auditClass->setExtendedClass('AbstractAudit');
 
-#            echo '<pre>';
-#            echo($auditClass->generate());
+            echo '<pre>';
+            echo($auditClass->generate());
 
         eval($auditClass->generate());
 
