@@ -39,20 +39,20 @@ class AuditAutoloader extends StandardAutoloader
         $auditClass = new ClassGenerator();
 
         // Add revision reference getter and setter
-        $auditClass->addProperty($config->getRevisionFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
+        $auditClass->addProperty($config->getRevisionEntityFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
         $auditClass->addMethod(
-            'get' . $config->getRevisionFieldName(),
+            'get' . $config->getRevisionEntityFieldName(),
             array(),
             MethodGenerator::FLAG_PUBLIC,
-            " return \$this->" .  $config->getRevisionFieldName() . ";");
+            " return \$this->" .  $config->getRevisionEntityFieldName() . ";");
 
         $auditClass->addMethod(
-            'set' . $config->getRevisionFieldName(),
+            'set' . $config->getRevisionEntityFieldName(),
             array('value'),
             MethodGenerator::FLAG_PUBLIC,
-            " \$this->" .  $config->getRevisionFieldName() . " = \$value;\nreturn \$this;
+            " \$this->" .  $config->getRevisionEntityFieldName() . " = \$value;\nreturn \$this;
             ");
-        $identifiers = array($config->getRevisionFieldName());
+        $identifiers = array($config->getRevisionEntityFieldName());
 
         //  Build a discovered many to many join class
         $joinClasses = $config->getJoinClasses();

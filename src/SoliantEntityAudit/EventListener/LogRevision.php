@@ -113,6 +113,7 @@ class LogRevision implements EventSubscriber
 
     public function getCollectionUpdates()
     {
+        if (!$this->collectionUpdates) $this->collectionUpdates = array();
         return $this->collectionUpdates;
     }
 
@@ -188,12 +189,13 @@ class LogRevision implements EventSubscriber
         $auditEntity = new $auditEntityClass();
         $auditEntity->exchangeArray($this->getClassProperties($entity));
 
-        $revisionSetter = 'set' . $this->getConfig()->getRevisionFieldName();
-        $auditEntity->$revisionSetter($this->getRevision());
-
         $revisionEntity = new RevisionEntityEntity();
         $revisionEntity->setRevision($this->getRevision());
         $revisionEntity->setRevisionType($revisionType);
+        $this->addRevisionEntity($revisionEntity);
+
+        $revisionEntitySetter = 'set' . $this->getConfig()->getRevisionEntityFieldName();
+        $auditEntity->$revisionEntitySetter($revisionEntity);
 
         // Re-exchange data after flush to map generated fields
         if ($revisionType ==  'INS' or $revisionType ==  'UPD') {
@@ -206,7 +208,7 @@ class LogRevision implements EventSubscriber
             $revisionEntity->setAuditEntity($auditEntity);
         }
 
-        return array($auditEntity, $revisionEntity);
+        return array($auditEntity);
     }
 
     public function onFlush(OnFlushEventArgs $eventArgs)
@@ -257,6 +259,10 @@ class LogRevision implements EventSubscriber
                 $entityMap['revisionEntity']->setAuditEntity($entityMap['auditEntity']);
             }
 
+            foreach ($this->getRevisionEntities() as $entity)
+                $this->getEntityManager()->persist($entity);
+            $this->getEntityManager()->flush();
+
             foreach ($this->getEntities() as $entity) {
 
                 // Audit complete collections as a snapshot of an updated entity
@@ -280,7 +286,23 @@ class LogRevision implements EventSubscriber
             $this->resetEntities();
             $this->resetReexchangeEntities();
             $this->resetRevision();
+            $this->resetRevisionEntities();
             $this->setInAuditTransaction(false);
         }
+    }
+
+    private function addRevisionEntity(RevisionEntityEntity $entity)
+    {
+        $this->revisionEntities[] = $entity;
+    }
+
+    private function resetRevisionEntities()
+    {
+        $this->revisionEntities = array();
+    }
+
+    private function getRevisionEntities()
+    {
+        return $this->revisionEntities;
     }
 }

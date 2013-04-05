@@ -43,7 +43,7 @@ final class AuditDriver implements MappingDriver
             $builder->addField('timestamp', 'datetime');
 
             // Add association between RevisionEntity and Revision
-            $builder->addOneToMany('revisionEntities', 'SoliantEntityAudit\\Entity\\RevisionEntity', 'revision');
+            $builder->addOneToMany('revisionEntities', 'SoliantEntityAudit\\Entity\\RevisionEntity', $config->getRevisionFieldName());
 
             // Add assoication between ZfcUser and Revision
             $zfcUserMetadata = $metadataFactory->getMetadataFor(\SoliantEntityAudit\Module::getZfcUserEntity());
@@ -59,8 +59,8 @@ final class AuditDriver implements MappingDriver
         //  Build a discovered many to many join class
         $joinClasses = $config->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
-            $builder->addManyToOne($config->getRevisionFieldName(), 'SoliantEntityAudit\\Entity\\Revision');
-            $identifiers = array($config->getRevisionFieldName());
+            $builder->addManyToOne($config->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\Revision');
+            $identifiers = array($config->getRevisionEntityFieldName());
 
             foreach ($joinClasses[$className]['joinColumns'] as $joinColumn) {
                 $builder->addField($joinColumn['name'], 'integer', array('nullable' => true));
@@ -84,8 +84,8 @@ final class AuditDriver implements MappingDriver
 
         $auditedClassMetadata = $metadataFactory->getMetadataFor($metadataClass->getAuditedEntityClass());
 
-        $builder->addManyToOne($config->getRevisionFieldName(), 'SoliantEntityAudit\\Entity\\Revision');
-        $identifiers = array($config->getRevisionFieldName());
+        $builder->addManyToOne($config->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\RevisionEntity');
+        $identifiers = array($config->getRevisionEntityFieldName());
 
         // Add fields from target to audit entity
         foreach ($auditedClassMetadata->getFieldNames() as $fieldName) {

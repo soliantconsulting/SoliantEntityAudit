@@ -74,6 +74,11 @@ class ModuleOptions
         return 'revision';
     }
 
+    public function getRevisionEntityFieldName()
+    {
+        return 'revisionEntity';
+    }
+
     public function getRevisionTableName()
     {
         return $this->revisionTableName;
