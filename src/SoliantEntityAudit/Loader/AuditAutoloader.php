@@ -160,8 +160,8 @@ class AuditAutoloader extends StandardAutoloader
         $auditClass->setName(str_replace('\\', '_', $currentClass));
         $auditClass->setExtendedClass('AbstractAudit');
 
-            echo '<pre>';
-            echo($auditClass->generate());
+#            echo '<pre>';
+#            echo($auditClass->generate());
 
         eval($auditClass->generate());
 
