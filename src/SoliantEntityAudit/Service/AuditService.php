@@ -55,8 +55,8 @@ class AuditService extends AbstractHelper
         $metadata = $metadataFactory->getMetadataFor(get_class($entity));
         $values = $metadata->getIdentifierValues($entity);
 
-        if ($cleanRevision and $values['revision'] instanceof \SoliantEntityAudit\Entity\Revision) {
-            unset($values['revision']);
+        if ($cleanRevision and $values['revisionEntity'] instanceof \SoliantEntityAudit\Entity\RevisionEntity) {
+            unset($values['revisionEntity']);
         }
 
         foreach ($values as $key => $val) {

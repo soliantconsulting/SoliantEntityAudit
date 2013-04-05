@@ -78,7 +78,7 @@ class RevisionEntity
 
     public function setEntityKeys($value)
     {
-        unset($value['revision']);
+        unset($value['revisionEntity']);
 
         $this->entityKeys = serialize($value);
     }
@@ -110,10 +110,7 @@ class RevisionEntity
     {
         $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
 
-        $keys = $this->getEntityKeys();
-        $keys['revision'] = $this->getRevision();
-
-        return $entityManager->getRepository($this->getAuditEntityClass())->findOneBy($keys);
+        return $entityManager->getRepository($this->getAuditEntityClass())->findOneBy(array('revisionEntity' => $this));
     }
 
     public function getTargetEntity()
