@@ -106,6 +106,21 @@ class LogRevision implements EventSubscriber
         $this->reexchangeEntities[] = $entityMap;
     }
 
+    private function addRevisionEntity(RevisionEntityEntity $entity)
+    {
+        $this->revisionEntities[] = $entity;
+    }
+
+    private function resetRevisionEntities()
+    {
+        $this->revisionEntities = array();
+    }
+
+    private function getRevisionEntities()
+    {
+        return $this->revisionEntities;
+    }
+
     public function addCollectionUpdate($collection)
     {
         $this->collectionUpdates[] = $collection;
@@ -249,9 +264,6 @@ class LogRevision implements EventSubscriber
             $this->setInAuditTransaction(true);
             $this->getEntityManager()->beginTransaction();
 
-            $this->getEntityManager()->persist($this->getRevision());
-            $this->getEntityManager()->flush();
-
             // Insert entites will trigger key generation and must be
             // re-exchanged (delete entites go out of scope)
             foreach ($this->getReexchangeEntities() as $entityMap) {
@@ -259,6 +271,8 @@ class LogRevision implements EventSubscriber
                 $entityMap['revisionEntity']->setAuditEntity($entityMap['auditEntity']);
             }
 
+            // Flush revision and revisionEntities
+            $this->getEntityManager()->persist($this->getRevision());
             foreach ($this->getRevisionEntities() as $entity)
                 $this->getEntityManager()->persist($entity);
             $this->getEntityManager()->flush();
@@ -289,20 +303,5 @@ class LogRevision implements EventSubscriber
             $this->resetRevisionEntities();
             $this->setInAuditTransaction(false);
         }
-    }
-
-    private function addRevisionEntity(RevisionEntityEntity $entity)
-    {
-        $this->revisionEntities[] = $entity;
-    }
-
-    private function resetRevisionEntities()
-    {
-        $this->revisionEntities = array();
-    }
-
-    private function getRevisionEntities()
-    {
-        return $this->revisionEntities;
     }
 }

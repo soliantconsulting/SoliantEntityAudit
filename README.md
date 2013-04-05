@@ -15,7 +15,7 @@ allow you to find and browse to the latest audit record from a given audited ent
 Revisions pool all audited entities into revision buckets.  Each bucket contains the revision entity for each 
 audited record in a transaction.
 
-Auditing is done in it's own transaction after a flush has been performed.  Auditing takes three flushes in one transaction to complete.  
+Auditing is done in it's own transaction after a flush has been performed.  Auditing takes two flushes in one transaction to complete.  
 
 
 Install
