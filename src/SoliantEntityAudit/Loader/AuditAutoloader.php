@@ -78,7 +78,7 @@ class AuditAutoloader extends StandardAutoloader
 
         // Verify this autoloader is used for target class
         #FIXME:  why is this sent work outside the set namespace?
-        foreach($config->getAuditedEntityClasses() as $targetClass => $targetClassOptions) {
+        foreach($config->getAuditedClassNames() as $targetClass => $targetClassOptions) {
 
              $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $targetClass);
 

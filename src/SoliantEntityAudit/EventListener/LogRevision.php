@@ -178,7 +178,7 @@ class LogRevision implements EventSubscriber
 
     private function auditEntity($entity, $revisionType)
     {
-        if (!in_array(get_class($entity), array_keys($this->getConfig()->getAuditedEntityClasses())))
+        if (!in_array(get_class($entity), array_keys($this->getConfig()->getAuditedClassNames())))
             return array();
 
         $auditEntityClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));

@@ -25,23 +25,25 @@ use SoliantEntityAuditTest\Bootstrap
 
     ;
 
-class AuditAutoloaderTest extends \PHPUnit_Framework_TestCase
+class ModuleTest extends \PHPUnit_Framework_TestCase
 {
     protected $serviceManager;
 
     protected function setUp()
     {
-        $this->_sm = Bootstrap::getApplication()->getServiceManager();
-        $this->_em = $this->_sm->get('doctrine.entitymanager.orm_default');
-        $this->_schemaTool = new \Doctrine\ORM\Tools\SchemaTool($this->_em);
     }
 
-    public function testAutoloaderCanLoadAuditEntities()
+    public function testServiceManagerIsSet()
     {
-        $options = $this->_sm->get('auditModuleOptions');
-        foreach ($options->getAuditedClassNames() as $className => $route) {
-            $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $className);
-            $this->assertInstanceOf('SoliantEntityAudit\\Entity\\AbstractAudit', new $auditClassName());
-        }
+        $sm = Bootstrap::getApplication()->getServiceManager();
+        $this->assertInstanceOf('Zend\ServiceManager\ServiceManager', $sm);
+    }
+
+    public function testServiceConfig()
+    {
+        $sm = Bootstrap::getApplication()->getServiceManager();
+
+        $this->assertInstanceOf('SoliantEntityAudit\Options\ModuleOptions', $sm->get('auditModuleOptions'));
+        $this->assertInstanceOf('SoliantEntityAudit\Service\AuditService', $sm->get('auditService'));
     }
 }

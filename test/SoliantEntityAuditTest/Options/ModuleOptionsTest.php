@@ -35,7 +35,7 @@ class ModuleOptionsTest extends \PHPUnit_Framework_TestCase
         $moduleOptions = clone $serviceManager->get('auditModuleOptions');
         $moduleOptions->setDefaults(array());
 
-        $moduleOptions->setAuditedEntityClasses(array('Test1', 'Test2'));
-        $this->assertEquals($moduleOptions->getAuditedEntityClasses(), array('Test1', 'Test2'));
+        $moduleOptions->setAuditedClassNames(array('Test1', 'Test2'));
+        $this->assertEquals($moduleOptions->getAuditedClassNames(), array('Test1', 'Test2'));
     }
 }

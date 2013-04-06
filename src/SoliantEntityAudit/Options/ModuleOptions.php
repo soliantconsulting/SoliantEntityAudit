@@ -10,7 +10,7 @@ class ModuleOptions
     private $suffix;
     private $revisionTableName;
     private $revisionEntityTableName;
-    private $auditedEntityClasses;
+    private $auditedClassNames;
     private $joinClasses;
     private $user;
 
@@ -19,7 +19,7 @@ class ModuleOptions
         $this->setPaginatorLimit(isset($config['tableNamePrefix']) ? $config['paginator.limit']: 20);
         $this->setTableNamePrefix(isset($config['tableNamePrefix']) ? $config['tableNamePrefix']: null);
         $this->setTableNameSuffix(isset($config['tableNameSuffix']) ? $config['tableNameSuffix']: '_audit');
-        $this->setAuditedEntityClasses(isset($config['entities']) ? $config['entities']: array());
+        $this->setAuditedClassNames(isset($config['entities']) ? $config['entities']: array());
         $this->setRevisionTableName(isset($config['revisionTableName']) ? $config['revisionTableName']: 'Revision');
         $this->setRevisionEntityTableName(isset($config['revisionEntityTableName']) ? $config['revisionEntityTableName']: 'RevisionEntity');
     }
@@ -101,15 +101,15 @@ class ModuleOptions
         return $this;
     }
 
-    public function getAuditedEntityClasses()
+    public function getAuditedClassNames()
     {
-        if (!$this->auditedEntityClasses) $this->setAuditedEntityClasses(array());
-        return $this->auditedEntityClasses;
+        if (!$this->auditedClassNames) $this->setAuditedClassNames(array());
+        return $this->auditedClassNames;
     }
 
-    public function setAuditedEntityClasses(array $classes)
+    public function setAuditedClassNames(array $classes)
     {
-        $this->auditedEntityClasses = $classes;
+        $this->auditedClassNames = $classes;
         return $this;
     }
 
