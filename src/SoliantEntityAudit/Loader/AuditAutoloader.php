@@ -12,17 +12,9 @@ use Zend\Loader\StandardAutoloader
 
 class AuditAutoloader extends StandardAutoloader
 {
-    private $serviceManager;
-
-    public function setServiceManager(ServiceManager $serviceManager)
-    {
-        $this->serviceManager = $serviceManager;
-        return $this;
-    }
-
     public function getServiceManager()
     {
-        return $this->serviceManager;
+        return \SoliantEntityAudit\Module::getServiceManager();
     }
 
     /**
@@ -87,7 +79,9 @@ class AuditAutoloader extends StandardAutoloader
         // Verify this autoloader is used for target class
         #FIXME:  why is this sent work outside the set namespace?
         foreach($config->getAuditedEntityClasses() as $targetClass => $targetClassOptions) {
+
              $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $targetClass);
+
              if ($auditClassName == $className) {
                  $currentClass = $targetClass;
              }
@@ -97,6 +91,7 @@ class AuditAutoloader extends StandardAutoloader
 
         // Get fields from target entity
         $metadataFactory = $entityManager->getMetadataFactory();
+
         $auditedClassMetadata = $metadataFactory->getMetadataFor($currentClass);
         $fields = $auditedClassMetadata->getFieldNames();
 

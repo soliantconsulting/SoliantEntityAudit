@@ -29,17 +29,18 @@ class Module
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                 ),
             ),
+
+            'SoliantEntityAudit\Loader\AuditAutoloader' => array(
+                'namespaces' => array(
+                    'SoliantEntityAudit\Entity' => __DIR__,
+                )
+            ),
         );
     }
 
     public function onBootstrap(MvcEvent $e)
     {
         self::setServiceManager($e->getApplication()->getServiceManager());
-
-        $auditAutoloader = new AuditAutoloader();
-        $auditAutoloader->setServiceManager($e->getApplication()->getServiceManager());
-        $auditAutoloader->registerNamespace('SoliantEntityAudit\\Entity', __DIR__);
-        $auditAutoloader->register();
 
         // Subscribe log revision event listener
         $e->getApplication()->getServiceManager()->get('doctrine.eventmanager.orm_default')

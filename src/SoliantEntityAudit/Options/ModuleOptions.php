@@ -103,6 +103,7 @@ class ModuleOptions
 
     public function getAuditedEntityClasses()
     {
+        if (!$this->auditedEntityClasses) $this->setAuditedEntityClasses(array());
         return $this->auditedEntityClasses;
     }
 

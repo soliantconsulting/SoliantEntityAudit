@@ -7,6 +7,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * Type
@@ -19,119 +20,22 @@ class Album {
     private $artist;
     private $title;
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId() {
-        return $this->id;
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->mapField(array(
+           'id' => true,
+           'fieldName' => 'id',
+           'type' => 'integer',
+        ));
+
+        $metadata->mapField(array(
+           'fieldName' => 'artist',
+           'type' => 'string'
+        ));
+
+        $metadata->mapField(array(
+           'fieldName' => 'title',
+           'type' => 'string'
+        ));
     }
-
-    /**
-     * Set name
-     *
-     * @param  string $name
-     * @return Type
-     */
-    public function setName($name) {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName() {
-        return $this->name;
-    }
-
-    /**
-     * Set tag
-     *
-     * @param  string $tag
-     * @return Type
-     */
-    public function setTag($tag) {
-        $this->tag = $tag;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getTag() {
-        return $this->tag;
-    }
-
-    protected $inputFilter;
-
-    public function setInputFilter(InputFilterInterface $inputFilter) {
-        $this->inputFilter = $inputFilter;
-        return $this;
-    }
-
-    public function getArrayCopy() {
-        return get_object_vars($this);
-    }
-
-    public function exchangeArray($data =  array()) {
-        $this->setName($data["name"]);
-        $this->setTag($data["tag"]);
-    }
-
-    public function getInputFilter() {
-        if (!$this->inputFilter) {
-            $inputFilter = new InputFilter();
-
-            $factory = new InputFactory();
-            $inputFilter->add($factory->createInput(array(
-                'name' => 'name',
-                'required' => true,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                            'min' => 3,
-                            'max' => 100,
-                        ),
-                    ),
-                ),
-            )));
-
-            $inputFilter->add($factory->createInput(array(
-                'name' => 'tag',
-                'required' => false,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                            'min' => 3,
-                            'max' => 100,
-                        ),
-                    ),
-                ),
-            )));
-
-            $this->setInputFilter($inputFilter);
-        }
-        return $this->inputFilter;
-    }
-
 }

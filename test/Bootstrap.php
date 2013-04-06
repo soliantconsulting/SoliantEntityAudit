@@ -51,6 +51,11 @@ class Bootstrap
         $config = ArrayUtils::merge($baseConfig, $testConfig);
         $application = \Zend\Mvc\Application::init($config);
 
+        // build test database
+        $entityManager = $application->getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($entityManager);
+        $schemaTool->createSchema($entityManager->getMetadataFactory()->getAllMetadata());
+
         static::$application = $application;
     }
 
