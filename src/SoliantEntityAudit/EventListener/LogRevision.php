@@ -26,22 +26,9 @@ class LogRevision implements EventSubscriber
     private $collectionUpdates;
     private $inAuditTransaction;
 
-    public function __construct($serviceManager)
-    {
-        $this->setServiceManager($serviceManager);
-        $this->setEntityManager($this->getServiceManager()->get("doctrine.entitymanager.orm_default"));
-        $this->setConfig($this->getServiceManager()->get("auditModuleOptions"));
-    }
-
-    public function setServiceManager(ServiceManager $serviceManager)
-    {
-        $this->serviceManager = $serviceManager;
-        return $this;
-    }
-
     public function getServiceManager()
     {
-        return $this->serviceManager;
+        return \SoliantEntityAudit\Module::getServiceManager();
     }
 
     public function setEntityManager(EntityManager $entityManager)
@@ -52,18 +39,12 @@ class LogRevision implements EventSubscriber
 
     public function getEntityManager()
     {
-        return $this->entityManager;
-    }
-
-    public function setConfig(ModuleOptions $config)
-    {
-        $this->config = $config;
-        return $this;
+        return $this->getServiceManager()->get("doctrine.entitymanager.orm_default");
     }
 
     public function getConfig()
     {
-        return $this->config;
+        return $this->getServiceManager()->get("auditModuleOptions");
     }
 
     public function getSubscribedEvents()

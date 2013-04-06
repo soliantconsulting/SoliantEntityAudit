@@ -15,6 +15,14 @@ return array(
                 ),
             ),
         ),
+
+        'eventmanager' => array(
+            'orm_default' => array(
+                'subscribers' => array(
+                    'SoliantEntityAudit\EventListener\LogRevision',
+                ),
+            ),
+        ),
     ),
 
     'controllers' => array(

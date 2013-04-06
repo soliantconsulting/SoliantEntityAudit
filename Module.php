@@ -41,10 +41,6 @@ class Module
     public function onBootstrap(MvcEvent $e)
     {
         self::setServiceManager($e->getApplication()->getServiceManager());
-
-        // Subscribe log revision event listener
-        $e->getApplication()->getServiceManager()->get('doctrine.eventmanager.orm_default')
-            ->addEventSubscriber(new LogRevision($e->getApplication()->getServiceManager()));
     }
 
     public static function setServiceManager(ServiceManager $serviceManager)
