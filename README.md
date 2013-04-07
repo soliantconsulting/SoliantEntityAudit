@@ -135,7 +135,6 @@ Return the latest revision entity for the given entity.
 $view->auditCurrentRevisionEntity($entity);
 ```
 
-Return a paginator object attached to every RevisionEntity for the given audited entity class.  This is not specific to an entity: this returns every revision entity for the _class name_.
 ```
 $view->auditEntityPaginator($page, $entityClassName);
 ```
@@ -145,7 +144,8 @@ Return the configuration for a specific entity or if not specified returns all e
 $view->auditOptions($entityName = null);
 ```
 
-Return all RevisionEntity entities for the given entity.
+Return all RevisionEntity entities for the given entity or 
+a paginator attached to every RevisionEntity for the given audited entity class.
 ```
 $view->auditRevisionEntityPaginator($page, $entity);
 ```

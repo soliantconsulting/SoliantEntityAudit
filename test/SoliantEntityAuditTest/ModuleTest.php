@@ -46,4 +46,15 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('SoliantEntityAudit\Options\ModuleOptions', $sm->get('auditModuleOptions'));
         $this->assertInstanceOf('SoliantEntityAudit\Service\AuditService', $sm->get('auditService'));
     }
+
+    public function testViewHelperConfig()
+    {
+
+        $sm = Bootstrap::getApplication()->getServiceManager();
+        $helper = $sm->get('viewhelpermanager')->get('auditDateTimeFormatter');
+
+        $now = new \DateTime();
+        $helper->setDateTimeFormat('U');
+        $this->assertEquals($helper($now), $now->format('U'));
+    }
 }
