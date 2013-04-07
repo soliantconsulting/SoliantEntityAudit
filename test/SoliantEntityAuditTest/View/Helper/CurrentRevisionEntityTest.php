@@ -39,6 +39,9 @@ class CurrentRevisionEntityTest extends \PHPUnit_Framework_TestCase
 
         $revisionEntity = $helper($this->entity);
 
+        // Test getRevisionEntities on Revision
+        $this->assertGreaterThan(0, sizeof($revisionEntity->getRevision()->getRevisionEntities()));
+
         $this->assertInstanceOf('SoliantEntityAudit\Entity\RevisionEntity', $revisionEntity);
     }
 
