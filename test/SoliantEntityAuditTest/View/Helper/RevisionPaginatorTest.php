@@ -43,6 +43,7 @@ class RevisionPaginatorTest extends \PHPUnit_Framework_TestCase
         foreach ($paginator as $row)
             $paginatedcount ++;
 
+        $this->assertGreaterThan(0, $count);
         $this->assertEquals($count, $paginatedcount);
     }
 
