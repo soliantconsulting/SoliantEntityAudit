@@ -33,11 +33,11 @@ final class CurrentRevisionEntity extends AbstractHelper implements ServiceLocat
         $entityManager = $this->getServiceLocator()->getServiceLocator()->get('doctrine.entitymanager.orm_default');
         $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
 
-        $revisionEntity = $entityManager->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->findBy(array(
+        $revisionEntitys = $entityManager->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->findBy(array(
             'targetEntityClass' => get_class($entity),
             'entityKeys' => serialize($auditService->getEntityIdentifierValues($entity)),
         ), array('id' => 'DESC'), 1);
 
-        if (sizeof($revisionEntity)) return $revisionEntity[0];
+        if (sizeof($revisionEntitys)) return $revisionEntitys[0];
     }
 }

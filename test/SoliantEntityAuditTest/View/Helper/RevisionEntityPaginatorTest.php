@@ -63,7 +63,7 @@ class RevisionEntityPaginatorTest extends \PHPUnit_Framework_TestCase
             'entityKeys' => serialize(array('id' => $this->entity->getId()))
         ));
         $count = sizeof($revisionEntities);
-die($count = ' =count');
+
         $paginator = $helper($page = 0, array_shift($revisionEntities)->getAuditEntity());
         $paginatedcount = 0;
         foreach ($paginator as $row)

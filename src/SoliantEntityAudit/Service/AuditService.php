@@ -29,7 +29,7 @@ class AuditService extends AbstractHelper
         return $this;
     }
 
-    public function getEntityValues($entity, $cleanRevison = false) {
+    public function getEntityValues($entity) {
         $em = \SoliantEntityAudit\Module::getServiceManager()
             ->get('doctrine.entitymanager.orm_default');
 
@@ -46,7 +46,7 @@ class AuditService extends AbstractHelper
         return $return;
     }
 
-    public function getEntityIdentifierValues($entity, $cleanRevision = false)
+    public function getEntityIdentifierValues($entity, $cleanRevisionEntity = false)
     {
         $entityManager = \SoliantEntityAudit\Module::getServiceManager()->get('doctrine.entitymanager.orm_default');
         $metadataFactory = $entityManager->getMetadataFactory();
@@ -55,7 +55,7 @@ class AuditService extends AbstractHelper
         $metadata = $metadataFactory->getMetadataFor(get_class($entity));
         $values = $metadata->getIdentifierValues($entity);
 
-        if ($cleanRevision and $values['revisionEntity'] instanceof \SoliantEntityAudit\Entity\RevisionEntity) {
+        if ($cleanRevisionEntity and $values['revisionEntity'] instanceof \SoliantEntityAudit\Entity\RevisionEntity) {
             unset($values['revisionEntity']);
         }
 
