@@ -31,12 +31,6 @@ class LogRevision implements EventSubscriber
         return \SoliantEntityAudit\Module::getServiceManager();
     }
 
-    public function setEntityManager(EntityManager $entityManager)
-    {
-        $this->entityManager = $entityManager;
-        return $this;
-    }
-
     public function getEntityManager()
     {
         return $this->getServiceManager()->get("doctrine.entitymanager.orm_default");

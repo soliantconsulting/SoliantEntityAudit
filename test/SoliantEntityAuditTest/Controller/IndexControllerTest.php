@@ -9,7 +9,7 @@ use SoliantEntityAuditTest\Bootstrap
     , Zend\Http\Response
     , Zend\Mvc\MvcEvent
     , Zend\Mvc\Router\RouteMatch
-    , PHPUnit_Framework_TestCase
+    , SoliantEntityAuditTest\Models\Album
     ;
 
 class IndexControllerTest extends \PHPUnit_Framework_TestCase
@@ -63,9 +63,23 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testRevisionActionCanBeAccessed()
     {
+        $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
+        $sm = Bootstrap::getApplication()->getServiceManager();
+
+        $entity = new Album;
+        $entity->setArtist('artist test 1');
+        $entity->setTitle('test 1');
+
+        $em->persist($entity);
+        $em->flush();
+
+        $helper = $sm->get('viewhelpermanager')->get('auditCurrentRevisionEntity');
+
+        $revisionEntity = $helper($entity);
+
         $this->routeMatch->setParam('action', 'revision');
         $this->routeMatch->setParam('controller', 'audit');
-        $this->routeMatch->setParam('revisionId', 1);
+        $this->routeMatch->setParam('revisionId', $revisionEntity->getRevision()->getId());
 
         $result   = $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
@@ -75,9 +89,23 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
 
     public function testRevisionEntityActionCanBeAccessed()
     {
+
+        $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
+        $sm = Bootstrap::getApplication()->getServiceManager();
+
+        $entity = new Album;
+        $entity->setArtist('artist test 1');
+        $entity->setTitle('test 1');
+
+        $em->persist($entity);
+        $em->flush();
+
+        $helper = $sm->get('viewhelpermanager')->get('auditCurrentRevisionEntity');
+        $revisionEntity = $helper($entity);
+
         $this->routeMatch->setParam('action', 'revision-entity');
         $this->routeMatch->setParam('controller', 'audit');
-        $this->routeMatch->setParam('revisionEntityId', 1);
+        $this->routeMatch->setParam('revisionEntityId', $revisionEntity->getId());
 
         $result   = $this->controller->dispatch($this->request);
         $response = $this->controller->getResponse();
