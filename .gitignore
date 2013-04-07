@@ -7,3 +7,4 @@
 .settings
 vendor
 data
+test/output
