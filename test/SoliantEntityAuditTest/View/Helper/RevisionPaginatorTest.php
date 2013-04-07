@@ -36,7 +36,8 @@ class RevisionPaginatorTest extends \PHPUnit_Framework_TestCase
         $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
 
         $helper = $sm->get('viewhelpermanager')->get('auditRevisionPaginator');
-        $count = sizeof($em->getRepository('SoliantEntityAudit\Entity\Revision')->findAll());
+        $revisions = $em->getRepository('SoliantEntityAudit\Entity\Revision')->findAll();
+        $count = sizeof($revisions);
 
         $paginator = $helper($page = 0);
         $paginatedcount = 0;
@@ -45,6 +46,16 @@ class RevisionPaginatorTest extends \PHPUnit_Framework_TestCase
 
         $this->assertGreaterThan(0, $count);
         $this->assertEquals($count, $paginatedcount);
+
+        // Test paginator filter
+        $revision1 = array_shift($revisions);
+
+        $paginator = $helper($page = 0, array('id' => $revision1->getId(), 'user' => null));
+        $paginatedcount = 0;
+        foreach ($paginator as $row)
+            $paginatedcount ++;
+
+        $this->assertEquals(1, $paginatedcount);
     }
 
     public function tearDown() {
