@@ -14,6 +14,7 @@ return array(
 
         'entities' => array(
             'SoliantEntityAuditTest\Models\Album' => array(),
+            'SoliantEntityAuditTest\Models\Song' => array(),
         ),
     ),
 
@@ -33,6 +34,7 @@ return array(
             'SoliantEntityAudit_moduleDriver' => array(
                 'class' => 'SoliantEntityAudit\Mapping\Driver\AuditDriver',
             ),
+
             __NAMESPACE__ . '_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\StaticPHPDriver',
                 'paths' => array(
