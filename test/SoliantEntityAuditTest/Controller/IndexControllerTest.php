@@ -47,4 +47,67 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(200, $response->getStatusCode());
     }
+
+    public function testUserActionCanBeAccessed()
+    {
+        $this->routeMatch->setParam('action', 'user');
+        $this->routeMatch->setParam('controller', 'audit');
+        $this->routeMatch->setParam('userId', 1);
+        $this->routeMatch->setParam('page', 0);
+
+        $result   = $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testRevisionActionCanBeAccessed()
+    {
+        $this->routeMatch->setParam('action', 'revision');
+        $this->routeMatch->setParam('controller', 'audit');
+        $this->routeMatch->setParam('revisionId', 1);
+
+        $result   = $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testRevisionEntityActionCanBeAccessed()
+    {
+        $this->routeMatch->setParam('action', 'revision-entity');
+        $this->routeMatch->setParam('controller', 'audit');
+        $this->routeMatch->setParam('revisionEntityId', 1);
+
+        $result   = $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testEntityActionCanBeAccessed()
+    {
+        $this->routeMatch->setParam('action', 'entity');
+        $this->routeMatch->setParam('controller', 'audit');
+        $this->routeMatch->setParam('entity', 'SoliantEntityAuditTest\\Models\Album');
+        $this->routeMatch->setParam('page', 0);
+
+        $result   = $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testCompareActionCanBeAccessed()
+    {
+        $this->routeMatch->setParam('action', 'compare');
+        $this->routeMatch->setParam('controller', 'audit');
+        $this->request->getPost()->set('revisionEntityId_old', 1);
+        $this->request->getPost()->set('revisionEntityId_new', 2);
+
+        $result   = $this->controller->dispatch($this->request);
+        $response = $this->controller->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
 }
