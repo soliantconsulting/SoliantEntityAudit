@@ -1,6 +1,6 @@
 <?php
 
-namespace SoliantEntityAuditTest\Loader;
+namespace SoliantEntityAuditTest\View\Helper;
 
 use SoliantEntityAuditTest\Bootstrap
     , SoliantEntityAuditTest\Models\Album

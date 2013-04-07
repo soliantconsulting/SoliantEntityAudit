@@ -1,6 +1,6 @@
 <?php
 
-namespace SoliantEntityAudit\Tests\Options;
+namespace SoliantEntityAuditTest\Options;
 
 use SoliantEntityAudit\Options\ModuleOptions
     , SoliantEntityAudit\Tests\Util\ServiceManagerFactory
