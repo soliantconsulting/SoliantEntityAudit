@@ -5,7 +5,7 @@ namespace SoliantEntityAuditTest;
 return array(
     'audit' => array(
         'datetime.format' => 'r',
-        'paginator.limit' => 20,
+        'paginator.limit' => 999999,
 
         'tableNamePrefix' => '',
         'tableNameSuffix' => '_audit',

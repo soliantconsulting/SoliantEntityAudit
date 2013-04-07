@@ -14,6 +14,6 @@ class OptionsTest extends \PHPUnit_Framework_TestCase
 
         $sm = Bootstrap::getApplication()->getServiceManager()->get('auditModuleOptions');
 
-        $this->assertEquals($helper(), $sm->getAuditedClasses());
+        $this->assertEquals($helper(), $sm->getAuditedClassNames());
     }
 }

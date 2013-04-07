@@ -13,6 +13,7 @@ use Zend\View\Helper\AbstractHelper
     , SoliantEntityAudit\Entity\AbstractAudit
     ;
 
+// Fetch all revisions for an entity by class name
 final class EntityPaginator extends AbstractHelper implements ServiceLocatorAwareInterface
 {
     private $serviceLocator;
