@@ -4,6 +4,7 @@ namespace SoliantEntityAuditTest\Models\LogRevision;
 
 use Doctrine\ORM\Mapping\ClassMetadata
     , Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder
+    , Doctrine\Common\Collections\ArrayCollection
     ;
 
 class Performer {
@@ -30,6 +31,9 @@ class Performer {
 
     public function getAlbums()
     {
+        if (!$this->albums)
+            $this->albums = new ArrayCollection();
+
         return $this->albums;
     }
 

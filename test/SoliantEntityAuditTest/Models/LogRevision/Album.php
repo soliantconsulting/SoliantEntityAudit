@@ -38,6 +38,14 @@ class Album {
         return $this->songs;
     }
 
+    public function getPerformers()
+    {
+        if (!$this->performers)
+            $this->performers = new ArrayCollection();
+
+        return $this->performers;
+    }
+
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
