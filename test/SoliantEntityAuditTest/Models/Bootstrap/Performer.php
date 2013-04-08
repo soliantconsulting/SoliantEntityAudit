@@ -6,44 +6,38 @@ use Doctrine\ORM\Mapping\ClassMetadata
     , Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder
     ;
 
-class Song {
+class Performer {
 
     private $id;
-    private $title;
-    private $album;
+    private $name;
+    private $albums;
 
     public function getId()
     {
         return $this->id;
     }
 
-    public function setTitle($value)
+    public function setName($value)
     {
-        $this->title = $value;
+        $this->name = $value;
         return $this;
     }
 
-    public function getTitle()
+    public function getName()
     {
-        return $this->title;
+        return $this->name;
     }
 
-    public function getAlbum()
+    public function getAlbums()
     {
-        return $this->album;
-    }
-
-    public function setAlbum($value)
-    {
-        $this->album = $value;
-        return $this;
+        return $this->albums;
     }
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
         $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
-        $builder->addField('title', 'string');
-        $builder->addManyToOne('album', 'Album', 'songs');
+        $builder->addField('name', 'string');
+        $builder->addOwningManyToMany('albums', 'SoliantEntityAuditTest\\Models\\Bootstrap\\Album', 'performers');
     }
 }
