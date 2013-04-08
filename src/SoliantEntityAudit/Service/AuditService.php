@@ -25,7 +25,6 @@ class AuditService extends AbstractHelper
 
     public function setComment($comment)
     {
-        echo "comment set to ::'$comment'\n\n";
         $this->comment = $comment;
         return $this;
     }

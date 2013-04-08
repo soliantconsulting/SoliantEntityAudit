@@ -139,11 +139,6 @@ $view->auditCurrentRevisionEntity($entity);
 $view->auditEntityPaginator($page, $entityClassName);
 ```
 
-Return the configuration for a specific entity or if not specified returns all entity configurations.  Used internally for routing.
-```
-$view->auditOptions($entityName = null);
-```
-
 Return all RevisionEntity entities for the given entity or 
 a paginator attached to every RevisionEntity for the given audited entity class.
 ```

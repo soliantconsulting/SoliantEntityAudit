@@ -23,5 +23,8 @@ class RevisionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($entity, $entity->setUser($user));
 
         $this->assertEquals($user, $entity->getUser());
+
+        $entity->setComment('Test revision entity setter and getter');
+        $this->assertEquals('Test revision entity setter and getter', $entity->getComment());
     }
 }

@@ -121,8 +121,6 @@ class LogRevision implements EventSubscriber
         $comment = $moduleOptions->getAuditService()->getComment();
         $revision->setComment($comment);
 
-        echo "revision comment set to $comment\n\n";
-
         $this->revision = $revision;
     }
 

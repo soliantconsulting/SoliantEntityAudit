@@ -8,6 +8,8 @@ use SoliantEntityAuditTest\Bootstrap
     , Doctrine\ORM\Tools\Setup
     , Doctrine\ORM\EntityManager
     , Doctrine\ORM\Mapping\Driver\StaticPHPDriver
+    , Doctrine\ORM\Mapping\Driver\XmlDriver
+    , Doctrine\ORM\Mapping\Driver\DriverChain
     , SoliantEntityAudit\Mapping\Driver\AuditDriver
     , Doctrine\ORM\Tools\SchemaTool
     ;
@@ -21,12 +23,23 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
     {
         $this->_oldEntityManager = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
-        return;
         $isDevMode = true;
 
         $config = Setup::createConfiguration($isDevMode, null, null);
-        $config->setMetadataDriverImpl(new StaticPHPDriver(array(__DIR__."/../Models")));
-        $config->setMetadataDriverImpl(new AuditDriver());
+
+        $chain = new DriverChain();
+        // zfc user is required
+        $chain->addDriver(new XmlDriver(__DIR__ . '/../../../vendor/zf-commons/zfc-user-doctrine-orm/config/xml/zfcuser')
+            , 'ZfcUser\Entity');
+        $chain->addDriver(new XmlDriver(__DIR__ . '/../../../vendor/zf-commons/zfc-user-doctrine-orm/config/xml/zfcuserdoctrineorm')
+            , 'ZfcUserDoctrineORM\Entity');
+        $chain->addDriver(new StaticPHPDriver(__DIR__ . "/../Models"), 'SoliantEntityAuditTest\Models');
+        $chain->addDriver(new AuditDriver('.'), 'SoliantEntityAudit\Entity');
+
+        $config->setMetadataDriverImpl($chain);
+
+        // Replace entity manager
+        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
 
         $conn = array(
             'driver' => 'pdo_sqlite',
@@ -34,36 +47,32 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
         );
 
         $entityManager = EntityManager::create($conn, $config);
-
-        // Replace entity manager
-        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
-        $moduleOptions->setAuditedClassNames(array(
-            'SoliantEntityAudit\Model\Album' => array(),
-            'SoliantEntityAudit\Model\Song' => array(),
-        ));
-
         $moduleOptions->setEntityManager($entityManager);
-
         $schemaTool = new SchemaTool($entityManager);
-        $sql = $schemaTool->getUpdateSchemaSql($entityManager->getMetadataFactory()->getAllMetadata());
-
-        print_r($sql);die();
 
         $schemaTool->createSchema($entityManager->getMetadataFactory()->getAllMetadata());
 
-die('ok');
-
         $this->_em = $entityManager;
 
-        die('created');
     }
 
     // If we reach this function then the audit driver has worked
-    public function testTrue()
+    public function testAuditCreateUpdateDelete()
     {
-        $sm = Bootstrap::getApplication()->getServiceManager();
-        $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
-        $service = Bootstrap::getApplication()->getServiceManager()->get("auditService");
+        $album = new Album;
+        $album->setTitle('Test entity lifecycle: CREATE');
+
+        $this->_em->persist($album);
+        $this->_em->flush();
+
+        $album->setTitle('Test entity lifecycle: UPDATE');
+
+        $this->_em->flush();
+
+        $album->setTitle('Test entity lifecycle: DELETE');
+
+        $this->_em->flush();
+
 
         $this->assertTrue(true);
     }
