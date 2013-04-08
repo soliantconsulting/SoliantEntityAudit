@@ -210,6 +210,7 @@ class LogRevision implements EventSubscriber
         }
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionUpdates() AS $collectionToUpdate) {
+            die('scheduled collection updates');
             if ($collectionToUpdate instanceof PersistentCollection) {
                 $this->addCollectionUpdate($collectionToUpdate);
             }

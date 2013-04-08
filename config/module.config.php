@@ -42,6 +42,7 @@ return array(
             'auditRevisionPaginator' => 'SoliantEntityAudit\View\Helper\RevisionPaginator',
             'auditRevisionEntityPaginator' => 'SoliantEntityAudit\View\Helper\RevisionEntityPaginator',
             'auditCurrentRevisionEntity' => 'SoliantEntityAudit\View\Helper\CurrentRevisionEntity',
+            'auditEntityOptions' => 'SoliantEntityAudit\View\Helper\EntityOptions',
         ),
     ),
 

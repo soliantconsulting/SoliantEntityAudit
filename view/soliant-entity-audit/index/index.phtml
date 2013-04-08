@@ -97,7 +97,7 @@
                     </a>
 
                     <?php
-                    if ($options = $this->auditOptions($revisionEntity->getTargetEntityClass())) {
+                    if ($options = $this->auditEntityOptions($revisionEntity->getTargetEntityClass())) {
                         $routeOptions = array_merge($options['defaults'], $revisionEntity->getEntityKeys());
                     ?>
                         <a class="btn btn-info" href="<?=
