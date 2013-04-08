@@ -117,7 +117,11 @@ class LogRevision implements EventSubscriber
         $revision = new RevisionEntity();
         $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
         if ($moduleOptions->getUser()) $revision->setUser($moduleOptions->getUser());
-        $revision->setComment($moduleOptions->getAuditService()->getComment());
+
+        $comment = $moduleOptions->getAuditService()->getComment();
+        $revision->setComment($comment);
+
+        echo "revision comment set to $comment\n\n";
 
         $this->revision = $revision;
     }
@@ -163,6 +167,7 @@ class LogRevision implements EventSubscriber
 
         $revisionEntity = new RevisionEntityEntity();
         $revisionEntity->setRevision($this->getRevision());
+        $this->getRevision()->getRevisionEntities()->add($revisionEntity);
         $revisionEntity->setRevisionType($revisionType);
         $this->addRevisionEntity($revisionEntity);
 

@@ -41,7 +41,6 @@ return array(
         'invokables' => array(
             'auditRevisionPaginator' => 'SoliantEntityAudit\View\Helper\RevisionPaginator',
             'auditRevisionEntityPaginator' => 'SoliantEntityAudit\View\Helper\RevisionEntityPaginator',
-            'auditOptions' => 'SoliantEntityAudit\View\Helper\Options',
             'auditCurrentRevisionEntity' => 'SoliantEntityAudit\View\Helper\CurrentRevisionEntity',
         ),
     ),

@@ -13,7 +13,7 @@ class RevisionEntityPaginatorTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         // Inserting data insures we will have a result > 0
-        $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
+        $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         $entity = new Album;
         $entity->setTitle('Test 1');
@@ -33,7 +33,7 @@ class RevisionEntityPaginatorTest extends \PHPUnit_Framework_TestCase
     public function testRevisionEntitiesAreReturnedInPaginator()
     {
         $sm = Bootstrap::getApplication()->getServiceManager();
-        $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
+        $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         $helper = $sm->get('viewhelpermanager')->get('auditRevisionEntityPaginator');
         $revisionEntities = $em->getRepository('SoliantEntityAudit\Entity\RevisionEntity')->findBy(array(
@@ -55,7 +55,7 @@ class RevisionEntityPaginatorTest extends \PHPUnit_Framework_TestCase
     {
 
         $sm = Bootstrap::getApplication()->getServiceManager();
-        $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
+        $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         $helper = $sm->get('viewhelpermanager')->get('auditRevisionEntityPaginator');
         $revisionEntities = $em->getRepository('SoliantEntityAudit\Entity\RevisionEntity')->findBy(array(
@@ -78,7 +78,7 @@ class RevisionEntityPaginatorTest extends \PHPUnit_Framework_TestCase
     {
 
         $sm = Bootstrap::getApplication()->getServiceManager();
-        $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
+        $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         $helper = $sm->get('viewhelpermanager')->get('auditRevisionEntityPaginator');
         $revisionEntities = $em->getRepository('SoliantEntityAudit\Entity\RevisionEntity')->findAll();

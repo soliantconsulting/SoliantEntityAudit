@@ -44,7 +44,7 @@ class Album {
         $builder = new ClassMetadataBuilder($metadata);
         $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
 
-        $builder->addField('artist', 'string');
+        $builder->addField('artist', 'string', array('nullable' => true));
         $builder->addField('title', 'string');
     }
 }

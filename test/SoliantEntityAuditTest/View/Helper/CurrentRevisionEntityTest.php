@@ -8,39 +8,23 @@ use SoliantEntityAuditTest\Bootstrap
 
 class CurrentRevisionEntityTest extends \PHPUnit_Framework_TestCase
 {
-    private $entity;
-
-    public function setUp()
+    public function testReturnsRevisionEntity()
     {
-        // Inserting data insures we will have a result > 0
-        $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
+        $sm = Bootstrap::getApplication()->getServiceManager();
+        $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
-        $entity = new Album;
-        $entity->setTitle('Test 1');
-        $entity->setArtist('Artist Test 1');
+        $helper = $sm->get('viewhelpermanager')->get('auditCurrentRevisionEntity');
+
+        $entity = new Album();
+        $entity->setTitle('Test CurrentRevisionEntity View Helper returns revision with more than two entities');
 
         $em->persist($entity);
         $em->flush();
 
-        $entity->setTitle('Change Test 2');
-        $entity->setArtist('Change Artist Test 2');
-
-        $em->flush();
-
-        $this->entity = $entity;
-    }
-
-    public function testReturnsRevisionEntity()
-    {
-        $sm = Bootstrap::getApplication()->getServiceManager();
-        $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
-
-        $helper = $sm->get('viewhelpermanager')->get('auditCurrentRevisionEntity');
-
-        $revisionEntity = $helper($this->entity);
+        $revisionEntity = $helper($entity);
 
         // Test getRevisionEntities on Revision
-        $this->assertGreaterThan(0, sizeof($revisionEntity->getRevision()->getRevisionEntities()));
+        $this->assertEquals(1, sizeof($revisionEntity->getRevision()->getRevisionEntities()));
 
         $this->assertInstanceOf('SoliantEntityAudit\Entity\RevisionEntity', $revisionEntity);
     }
@@ -48,7 +32,7 @@ class CurrentRevisionEntityTest extends \PHPUnit_Framework_TestCase
     public function testDoesNotReturnRevisionEntity()
     {
         $sm = Bootstrap::getApplication()->getServiceManager();
-        $em = Bootstrap::getApplication()->getServiceManager()->get("doctrine.entitymanager.orm_default");
+        $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         $helper = $sm->get('viewhelpermanager')->get('auditCurrentRevisionEntity');
 

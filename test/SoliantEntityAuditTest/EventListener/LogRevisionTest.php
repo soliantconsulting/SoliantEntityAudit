@@ -9,6 +9,7 @@ use SoliantEntityAuditTest\Bootstrap
     , Doctrine\ORM\EntityManager
     , Doctrine\ORM\Mapping\Driver\StaticPHPDriver
     , SoliantEntityAudit\Mapping\Driver\AuditDriver
+    , Doctrine\ORM\Tools\SchemaTool
     ;
 
 class LogRevisionTest extends \PHPUnit_Framework_TestCase
@@ -18,13 +19,14 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->_oldEntityManager = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
+
+        return;
         $isDevMode = true;
 
         $config = Setup::createConfiguration($isDevMode, null, null);
         $config->setMetadataDriverImpl(new StaticPHPDriver(array(__DIR__."/../Models")));
         $config->setMetadataDriverImpl(new AuditDriver());
-
-
 
         $conn = array(
             'driver' => 'pdo_sqlite',
@@ -34,13 +36,15 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
         $entityManager = EntityManager::create($conn, $config);
 
         // Replace entity manager
-        $this->_oldEntityManager = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
         $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+        $moduleOptions->setAuditedClassNames(array(
+            'SoliantEntityAudit\Model\Album' => array(),
+            'SoliantEntityAudit\Model\Song' => array(),
+        ));
+
         $moduleOptions->setEntityManager($entityManager);
 
-        $schemaTool = new \Doctrine\ORM\Tools\SchemaTool($entityManager);
-return;
-die('ok');
+        $schemaTool = new SchemaTool($entityManager);
         $sql = $schemaTool->getUpdateSchemaSql($entityManager->getMetadataFactory()->getAllMetadata());
 
         print_r($sql);die();

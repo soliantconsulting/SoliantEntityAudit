@@ -24,7 +24,7 @@ final class AuditDriver implements MappingDriver
 
         if ($className == 'SoliantEntityAudit\\Entity\RevisionEntity') {
             $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
-            $builder->addManyToOne('revision', 'SoliantEntityAudit\\Entity\\Revision');
+            $builder->addManyToOne('revision', 'SoliantEntityAudit\\Entity\\Revision', 'revisionEntities');
             $builder->addField('entityKeys', 'string');
             $builder->addField('auditEntityClass', 'string');
             $builder->addField('targetEntityClass', 'string');
@@ -41,7 +41,7 @@ final class AuditDriver implements MappingDriver
             $builder->addField('timestamp', 'datetime');
 
             // Add association between RevisionEntity and Revision
-            $builder->addOneToMany('revisionEntities', 'SoliantEntityAudit\\Entity\\RevisionEntity', $moduleOptions->getRevisionFieldName());
+            $builder->addOneToMany('revisionEntities', 'SoliantEntityAudit\\Entity\\RevisionEntity', 'revision');
 
             // Add assoication between ZfcUser and Revision
             $zfcUserMetadata = $metadataFactory->getMetadataFor($moduleOptions->getZfcUserEntityClassName());
