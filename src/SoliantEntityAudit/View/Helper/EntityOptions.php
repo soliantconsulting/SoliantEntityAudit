@@ -31,7 +31,7 @@ final class EntityOptions extends AbstractHelper implements ServiceLocatorAwareI
     public function __invoke($entityClass = null)
     {
         $auditModuleOptions = $this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions');
-        $auditedClassNames = $auditModuleOptions->getAuditedClassNames()
+        $auditedClassNames = $auditModuleOptions->getAuditedClassNames();
 
         if ($entityClass) return $auditedClassNames[$entityClass];
 
