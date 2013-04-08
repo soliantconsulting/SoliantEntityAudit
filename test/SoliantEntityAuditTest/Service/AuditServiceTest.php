@@ -3,7 +3,7 @@
 namespace SoliantEntityAuditTest\Service;
 
 use SoliantEntityAuditTest\Bootstrap
-    , SoliantEntityAuditTest\Models\Album
+    , SoliantEntityAuditTest\Models\Bootstrap\Album
     , Doctrine\Common\Persistence\Mapping\ClassMetadata
     ;
 

@@ -1,31 +1,20 @@
 <?php
 
-namespace SoliantEntityAuditTest\Models;
+namespace SoliantEntityAuditTest\Models\Autoloader;
 
 use Doctrine\ORM\Mapping\ClassMetadata
     , Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder
     ;
 
-class Album {
+class Song {
 
     private $id;
-    private $artist;
     private $title;
+    private $album;
 
     public function getId()
     {
         return $this->id;
-    }
-
-    public function getArtist()
-    {
-        return $this->artist;
-    }
-
-    public function setArtist($value)
-    {
-        $this->artist = $value;
-        return $this;
     }
 
     public function setTitle($value)
@@ -39,12 +28,22 @@ class Album {
         return $this->title;
     }
 
+    public function getAlbum()
+    {
+        return $this->album;
+    }
+
+    public function setAlbum($value)
+    {
+        $this->album = $value;
+        return $this;
+    }
+
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
         $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
-
-        $builder->addField('artist', 'string', array('nullable' => true));
         $builder->addField('title', 'string');
+        $builder->addManyToOne('album', 'SoliantEntityAuditTest\\Models\\Autoloader\\Album');
     }
 }

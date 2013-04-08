@@ -3,7 +3,7 @@
 namespace SoliantEntityAuditTest\View\Helper;
 
 use SoliantEntityAuditTest\Bootstrap
-    , SoliantEntityAuditTest\Models\Album
+    , SoliantEntityAuditTest\Models\Bootstrap\Album
     ;
 
 class CurrentRevisionEntityTest extends \PHPUnit_Framework_TestCase

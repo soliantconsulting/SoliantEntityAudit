@@ -13,8 +13,8 @@ return array(
         'revisionEntityTableName' => 'RevisionEntity',
 
         'entities' => array(
-            'SoliantEntityAuditTest\Models\Album' => array(),
-            'SoliantEntityAuditTest\Models\Song' => array(),
+            'SoliantEntityAuditTest\Models\Bootstrap\Album' => array(),
+            'SoliantEntityAuditTest\Models\Bootstrap\Song' => array(),
         ),
     ),
 
@@ -38,7 +38,7 @@ return array(
             __NAMESPACE__ . '_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\StaticPHPDriver',
                 'paths' => array(
-                    __DIR__ . '/../SoliantEntityAuditTest/Models',
+                    __DIR__ . '/../SoliantEntityAuditTest/Models/Bootstrap',
                 ),
             ),
 

@@ -5,7 +5,7 @@ namespace SoliantEntityAuditTest\Entity;
 use SoliantEntityAuditTest\Bootstrap
     , SoliantEntityAudit\Entity\Revision
     , Doctrine\Common\Persistence\Mapping\ClassMetadata
-    , SoliantEntityAuditTest\Models\Album
+    , SoliantEntityAuditTest\Models\Bootstrap\Album
     ;
 
 class RevisionEntityTest extends \PHPUnit_Framework_TestCase
@@ -29,7 +29,7 @@ class RevisionEntityTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('INS', $revisionEntity->getRevisionType());
         $this->assertEquals($entity, $revisionEntity->getTargetEntity());
-        $this->assertEquals('SoliantEntityAuditTest\Models\Album', $revisionEntity->getTargetEntityClass());
+        $this->assertEquals('SoliantEntityAuditTest\Models\Bootstrap\Album', $revisionEntity->getTargetEntityClass());
 
     }
 }

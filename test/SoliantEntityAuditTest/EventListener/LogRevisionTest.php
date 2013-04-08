@@ -3,7 +3,7 @@
 namespace SoliantEntityAuditTest\Service;
 
 use SoliantEntityAuditTest\Bootstrap
-    , SoliantEntityAuditTest\Models\Album
+    , SoliantEntityAuditTest\Models\LogRevision\Album
     , Doctrine\Common\Persistence\Mapping\ClassMetadata
     , Doctrine\ORM\Tools\Setup
     , Doctrine\ORM\EntityManager
@@ -22,6 +22,7 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->_oldEntityManager = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
+        $this->_oldAuditedClassNames = \SoliantEntityAudit\Module::getModuleOptions()->getAuditedClassNames();
 
         $isDevMode = true;
 
@@ -33,7 +34,7 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
             , 'ZfcUser\Entity');
         $chain->addDriver(new XmlDriver(__DIR__ . '/../../../vendor/zf-commons/zfc-user-doctrine-orm/config/xml/zfcuserdoctrineorm')
             , 'ZfcUserDoctrineORM\Entity');
-        $chain->addDriver(new StaticPHPDriver(__DIR__ . "/../Models"), 'SoliantEntityAuditTest\Models');
+        $chain->addDriver(new StaticPHPDriver(__DIR__ . "/../Models"), 'SoliantEntityAuditTest\Models\LogRevision');
         $chain->addDriver(new AuditDriver('.'), 'SoliantEntityAudit\Entity');
 
         $config->setMetadataDriverImpl($chain);
@@ -45,6 +46,11 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
             'driver' => 'pdo_sqlite',
             'memory' => true,
         );
+
+        $moduleOptions->setAuditedClassNames(array(
+            'SoliantEntityAuditTest\Models\LogRevision\Album' => array(),
+            'SoliantEntityAuditTest\Models\LogRevision\Song' => array(),
+        ));
 
         $entityManager = EntityManager::create($conn, $config);
         $moduleOptions->setEntityManager($entityManager);
@@ -82,5 +88,6 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
         // Replace entity manager
         $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
         $moduleOptions->setEntityManager($this->_oldEntityManager);
+        \SoliantEntityAudit\Module::getModuleOptions()->setAuditedClassNames($this->_oldAuditedClassNames);
     }
 }

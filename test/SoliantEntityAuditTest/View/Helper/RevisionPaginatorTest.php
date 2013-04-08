@@ -3,7 +3,7 @@
 namespace SoliantEntityAuditTest\View\Helper;
 
 use SoliantEntityAuditTest\Bootstrap
-    , SoliantEntityAuditTest\Models\Album
+    , SoliantEntityAuditTest\Models\Bootstrap\Album
     ;
 
 class RevisionPaginatorTest extends \PHPUnit_Framework_TestCase

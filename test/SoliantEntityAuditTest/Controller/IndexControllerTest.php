@@ -9,7 +9,7 @@ use SoliantEntityAuditTest\Bootstrap
     , Zend\Http\Response
     , Zend\Mvc\MvcEvent
     , Zend\Mvc\Router\RouteMatch
-    , SoliantEntityAuditTest\Models\Album
+    , SoliantEntityAuditTest\Models\Bootstrap\Album
     ;
 
 class IndexControllerTest extends \PHPUnit_Framework_TestCase
@@ -117,7 +117,7 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
     {
         $this->routeMatch->setParam('action', 'entity');
         $this->routeMatch->setParam('controller', 'audit');
-        $this->routeMatch->setParam('entity', 'SoliantEntityAuditTest\\Models\Album');
+        $this->routeMatch->setParam('entity', 'SoliantEntityAuditTest\Models\Bootstrap\Album');
         $this->routeMatch->setParam('page', 0);
 
         $result   = $this->controller->dispatch($this->request);
