@@ -3,11 +3,9 @@
 namespace SoliantEntityAudit\EventListener;
 
 use Doctrine\Common\EventSubscriber
-    , Doctrine\ORM\EntityManager
     , Doctrine\ORM\Events
     , Doctrine\ORM\Event\OnFlushEventArgs
     , Doctrine\ORM\Event\PostFlushEventArgs
-    , Zend\ServiceManager\ServiceManager
     , SoliantEntityAudit\Entity\Revision as RevisionEntity
     , SoliantEntityAudit\Options\ModuleOptions
     , SoliantEntityAudit\Entity\RevisionEntity as RevisionEntityEntity
@@ -17,29 +15,11 @@ use Doctrine\Common\EventSubscriber
 
 class LogRevision implements EventSubscriber
 {
-    private $entityManager;
-    private $serviceManager;
-    private $config;
     private $revision;
     private $entities;
     private $reexchangeEntities;
     private $collectionUpdates;
     private $inAuditTransaction;
-
-    public function getServiceManager()
-    {
-        return \SoliantEntityAudit\Module::getServiceManager();
-    }
-
-    public function getEntityManager()
-    {
-        return $this->getServiceManager()->get("doctrine.entitymanager.orm_default");
-    }
-
-    public function getConfig()
-    {
-        return $this->getServiceManager()->get("auditModuleOptions");
-    }
 
     public function getSubscribedEvents()
     {
@@ -135,8 +115,9 @@ class LogRevision implements EventSubscriber
         if ($this->revision) return;
 
         $revision = new RevisionEntity();
-        if ($this->getConfig()->getUser()) $revision->setUser($this->getConfig()->getUser());
-        $revision->setComment($this->getServiceManager()->get('auditService')->getComment());
+        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+        if ($moduleOptions->getUser()) $revision->setUser($moduleOptions->getUser());
+        $revision->setComment($moduleOptions->getAuditService()->getComment());
 
         $this->revision = $revision;
     }
@@ -172,7 +153,8 @@ class LogRevision implements EventSubscriber
 
     private function auditEntity($entity, $revisionType)
     {
-        if (!in_array(get_class($entity), array_keys($this->getConfig()->getAuditedClassNames())))
+        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+        if (!in_array(get_class($entity), array_keys($moduleOptions->getAuditedClassNames())))
             return array();
 
         $auditEntityClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
@@ -184,7 +166,7 @@ class LogRevision implements EventSubscriber
         $revisionEntity->setRevisionType($revisionType);
         $this->addRevisionEntity($revisionEntity);
 
-        $revisionEntitySetter = 'set' . $this->getConfig()->getRevisionEntityFieldName();
+        $revisionEntitySetter = 'set' . $moduleOptions->getRevisionEntityFieldName();
         $auditEntity->$revisionEntitySetter($revisionEntity);
 
         // Re-exchange data after flush to map generated fields
@@ -237,7 +219,8 @@ class LogRevision implements EventSubscriber
     {
         if ($this->getEntities() and !$this->getInAuditTransaction()) {
             $this->setInAuditTransaction(true);
-            $this->getEntityManager()->beginTransaction();
+            $entityManager = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
+            $entityManager->beginTransaction();
 
             // Insert entites will trigger key generation and must be
             // re-exchanged (delete entites go out of scope)
@@ -247,10 +230,10 @@ class LogRevision implements EventSubscriber
             }
 
             // Flush revision and revisionEntities
-            $this->getEntityManager()->persist($this->getRevision());
+            $entityManager->persist($this->getRevision());
             foreach ($this->getRevisionEntities() as $entity)
-                $this->getEntityManager()->persist($entity);
-            $this->getEntityManager()->flush();
+                $entityManager->persist($entity);
+            $entityManager->flush();
 
             foreach ($this->getEntities() as $entity) {
 
@@ -265,13 +248,13 @@ class LogRevision implements EventSubscriber
                     }
                 }
 
-                $this->getEntityManager()->persist($entity);
+                $entityManager->persist($entity);
             }
 
 
-            $this->getEntityManager()->flush();
+            $entityManager->flush();
 
-            $this->getEntityManager()->commit();
+            $entityManager->commit();
             $this->resetEntities();
             $this->resetReexchangeEntities();
             $this->resetRevision();

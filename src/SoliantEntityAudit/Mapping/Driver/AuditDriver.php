@@ -17,10 +17,8 @@ final class AuditDriver implements MappingDriver
      */
     function loadMetadataForClass($className, ClassMetadata $metadata)
     {
-        $serviceManager = \SoliantEntityAudit\Module::getServiceManager();
-
-        $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
-        $config = $serviceManager->get('auditModuleOptions');
+        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+        $entityManager = $moduleOptions->getEntityManager();
         $metadataFactory = $entityManager->getMetadataFactory();
         $builder = new ClassMetadataBuilder($metadata);
 
@@ -32,7 +30,7 @@ final class AuditDriver implements MappingDriver
             $builder->addField('targetEntityClass', 'string');
             $builder->addField('revisionType', 'string');
 
-            $metadata->setTableName($config->getRevisionEntityTableName());
+            $metadata->setTableName($moduleOptions->getRevisionEntityTableName());
             return;
         }
 
@@ -43,24 +41,24 @@ final class AuditDriver implements MappingDriver
             $builder->addField('timestamp', 'datetime');
 
             // Add association between RevisionEntity and Revision
-            $builder->addOneToMany('revisionEntities', 'SoliantEntityAudit\\Entity\\RevisionEntity', $config->getRevisionFieldName());
+            $builder->addOneToMany('revisionEntities', 'SoliantEntityAudit\\Entity\\RevisionEntity', $moduleOptions->getRevisionFieldName());
 
             // Add assoication between ZfcUser and Revision
-            $zfcUserMetadata = $metadataFactory->getMetadataFor(\SoliantEntityAudit\Module::getZfcUserEntity());
+            $zfcUserMetadata = $metadataFactory->getMetadataFor($moduleOptions->getZfcUserEntityClassName());
             $builder
                 ->createManyToOne('user', $zfcUserMetadata->getName())
                 ->addJoinColumn('user_id', $zfcUserMetadata->getSingleIdentifierColumnName())
                 ->build();
 
-            $metadata->setTableName($config->getRevisionTableName());
+            $metadata->setTableName($moduleOptions->getRevisionTableName());
             return;
         }
 
         //  Build a discovered many to many join class
-        $joinClasses = $config->getJoinClasses();
+        $joinClasses = $moduleOptions->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
-            $builder->addManyToOne($config->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\Revision');
-            $identifiers = array($config->getRevisionEntityFieldName());
+            $builder->addManyToOne($moduleOptions->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\Revision');
+            $identifiers = array($moduleOptions->getRevisionEntityFieldName());
 
             foreach ($joinClasses[$className]['joinColumns'] as $joinColumn) {
                 $builder->addField($joinColumn['name'], 'integer', array('nullable' => true));
@@ -72,7 +70,7 @@ final class AuditDriver implements MappingDriver
                 $identifiers[] = $joinColumn['name'];
             }
 
-            $metadata->setTableName($config->getTableNamePrefix() . $joinClasses[$className]['name'] . $config->getTableNameSuffix());
+            $metadata->setTableName($moduleOptions->getTableNamePrefix() . $joinClasses[$className]['name'] . $moduleOptions->getTableNameSuffix());
             $metadata->setIdentifier($identifiers);
             return;
         }
@@ -84,8 +82,8 @@ final class AuditDriver implements MappingDriver
 
         $auditedClassMetadata = $metadataFactory->getMetadataFor($metadataClass->getAuditedEntityClass());
 
-        $builder->addManyToOne($config->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\RevisionEntity');
-        $identifiers = array($config->getRevisionEntityFieldName());
+        $builder->addManyToOne($moduleOptions->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\RevisionEntity');
+        $identifiers = array($moduleOptions->getRevisionEntityFieldName());
 
         // Add fields from target to audit entity
         foreach ($auditedClassMetadata->getFieldNames() as $fieldName) {
@@ -102,7 +100,6 @@ final class AuditDriver implements MappingDriver
                 # die('driver');
             }
 
-
             if (isset($mapping['joinTableColumns'])) {
                 foreach ($mapping['joinTableColumns'] as $field) {
                     $builder->addField($mapping['fieldName'], 'integer', array('nullable' => true, 'columnName' => $field));
@@ -117,7 +114,7 @@ final class AuditDriver implements MappingDriver
 
         }
 
-        $metadata->setTableName($config->getTableNamePrefix() . $auditedClassMetadata->getTableName() . $config->getTableNameSuffix());
+        $metadata->setTableName($moduleOptions->getTableNamePrefix() . $auditedClassMetadata->getTableName() . $moduleOptions->getTableNameSuffix());
         $metadata->setIdentifier($identifiers);
 
         return;
@@ -130,13 +127,12 @@ final class AuditDriver implements MappingDriver
      */
     function getAllClassNames()
     {
-        $serviceManager = \SoliantEntityAudit\Module::getServiceManager();
-        $config = $serviceManager->get('auditModuleOptions');
-        $entityManager = $serviceManager->get('doctrine.entitymanager.orm_default');
+        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+        $entityManager = $moduleOptions->getEntityManager();
         $metadataFactory = $entityManager->getMetadataFactory();
 
         $auditEntities = array();
-        foreach ($config->getAuditedClassNames() as $name => $targetClassOptions) {
+        foreach ($moduleOptions->getAuditedClassNames() as $name => $targetClassOptions) {
             $auditClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $name);
             $auditEntities[] = $auditClassName;
             $auditedClassMetadata = $metadataFactory->getMetadataFor($name);
@@ -145,7 +141,7 @@ final class AuditDriver implements MappingDriver
                 if (isset($mapping['joinTable'])) {
                     $auditJoinTableClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
                     $auditEntities[] = $auditJoinTableClassName;
-                    $config->addJoinClass($auditJoinTableClassName, $mapping['joinTable']);
+                    $moduleOptions->addJoinClass($auditJoinTableClassName, $mapping['joinTable']);
                 }
             }
         }

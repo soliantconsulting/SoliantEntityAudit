@@ -30,9 +30,10 @@ final class RevisionPaginator extends AbstractHelper implements ServiceLocatorAw
 
     public function __invoke($page, $filter = array())
     {
-        $entityManager = $this->getServiceLocator()->getServiceLocator()->get('doctrine.entitymanager.orm_default');
-        $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
         $auditModuleOptions = $this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions');
+        $entityManager = $auditModuleOptions->getEntityManager();
+        $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
+
 
         $repository = $entityManager->getRepository('SoliantEntityAudit\\Entity\\Revision');
 

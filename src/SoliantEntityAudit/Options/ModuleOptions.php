@@ -2,6 +2,8 @@
 
 namespace SoliantEntityAudit\Options;
 use ZfcUser\Entity\UserInterface as ZfcUserInterface
+    , Doctrine\ORM\EntityManager
+    , SoliantEntityAudit\Service\AuditService
     ;
 
 class ModuleOptions
@@ -13,6 +15,9 @@ class ModuleOptions
     private $auditedClassNames;
     private $joinClasses;
     private $user;
+    private $entityManager;
+    private $auditService;
+    private $zfcUserEntityClassName;
 
     public function setDefaults(array $config)
     {
@@ -22,6 +27,36 @@ class ModuleOptions
         $this->setAuditedClassNames(isset($config['entities']) ? $config['entities']: array());
         $this->setRevisionTableName(isset($config['revisionTableName']) ? $config['revisionTableName']: 'Revision');
         $this->setRevisionEntityTableName(isset($config['revisionEntityTableName']) ? $config['revisionEntityTableName']: 'RevisionEntity');
+    }
+
+    public function getAuditService()
+    {
+        return $this->auditService;
+    }
+
+    public function setAuditService(AuditService $auditService)
+    {
+        $this->auditService = $auditService;
+    }
+
+    public function getEntityManager()
+    {
+        return $this->entityManager;
+    }
+
+    public function setEntityManager(EntityManager $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    public function getZfcUserEntityClassName()
+    {
+        return $this->zfcUserEntityClassName;
+    }
+
+    public function setZfcUserEntityClassName($className)
+    {
+        $this->zfcUserEntityClassName = $className;
     }
 
     public function addJoinClass($className, $mapping)

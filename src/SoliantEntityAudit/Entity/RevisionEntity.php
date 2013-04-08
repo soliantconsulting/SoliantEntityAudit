@@ -5,7 +5,6 @@ namespace SoliantEntityAudit\Entity;
 use ZfcUser\Entity\UserInterface
     , Doctrine\ORM\Mapping\ClassMetadata
     , Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder
-    , Zend\ServiceManager\ServiceManager
     , Zend\Code\Reflection\ClassReflection;
     ;
 
@@ -27,11 +26,6 @@ class RevisionEntity
 
     // The type of action, INS, UPD, DEL
     private $revisionType;
-
-    public function getServiceManager()
-    {
-        return \SoliantEntityAudit\Module::getServiceManager();
-    }
 
     public function getId()
     {
@@ -96,7 +90,9 @@ class RevisionEntity
 
     public function setAuditEntity(AbstractAudit $entity)
     {
-        $auditService = $this->getServiceManager()->get('auditService');
+        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+
+        $auditService = $moduleOptions->getAuditService();
         $identifiers = $auditService->getEntityIdentifierValues($entity);
 
         $this->setAuditEntityClass(get_class($entity));
@@ -108,14 +104,14 @@ class RevisionEntity
 
     public function getAuditEntity()
     {
-        $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $entityManager = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         return $entityManager->getRepository($this->getAuditEntityClass())->findOneBy(array('revisionEntity' => $this));
     }
 
     public function getTargetEntity()
     {
-        $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $entityManager = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         return $entityManager->getRepository(
             $entityManager

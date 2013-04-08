@@ -33,8 +33,8 @@ class IndexController extends AbstractActionController
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
         $userId = (int)$this->getEvent()->getRouteMatch()->getParam('userId');
 
-        $user = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
-            ->getRepository(\SoliantEntityAudit\Module::getZfcUserEntity())->find($userId);
+        $user = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager()
+            ->getRepository(\SoliantEntityAudit\Module::getModuleOptions()->getZfcUserEntityClassName())->find($userId);
 
         return array(
             'page' => $page,
@@ -52,7 +52,7 @@ class IndexController extends AbstractActionController
     {
         $revisionId = (int)$this->getEvent()->getRouteMatch()->getParam('revisionId');
 
-        $revision = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+        $revision = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager()
             ->getRepository('SoliantEntityAudit\\Entity\\Revision')
             ->find($revisionId);
 
@@ -72,13 +72,13 @@ class IndexController extends AbstractActionController
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
         $revisionEntityId = (int) $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
 
-        $revisionEntity = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+        $revisionEntity = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager()
             ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId);
 
         if (!$revisionEntity)
             return $this->plugin('redirect')->toRoute('audit');
 
-        $repository = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+        $repository = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager()
             ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity');
 
         return array(
@@ -120,9 +120,9 @@ class IndexController extends AbstractActionController
         $revisionEntityId_old = $this->getRequest()->getPost()->get('revisionEntityId_old');
         $revisionEntityId_new = $this->getRequest()->getPost()->get('revisionEntityId_new');
 
-        $revisionEntity_old = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+        $revisionEntity_old = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager()
             ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId_old);
-        $revisionEntity_new = $this->getServiceLocator()->get('doctrine.entitymanager.orm_default')
+        $revisionEntity_new = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager()
             ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId_new);
 
         if (!$revisionEntity_old and !$revisionEntity_new)

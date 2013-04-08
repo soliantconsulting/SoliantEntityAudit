@@ -29,8 +29,9 @@ final class CurrentRevisionEntity extends AbstractHelper implements ServiceLocat
         return $this;
     }
 
-    public function __invoke($entity) {
-        $entityManager = $this->getServiceLocator()->getServiceLocator()->get('doctrine.entitymanager.orm_default');
+    public function __invoke($entity)
+    {
+        $entityManager = $this->getServiceLocator()->getServiceLocator()->get('auditModuleOptions')->getEntityManager();
         $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
 
         $revisionEntitys = $entityManager->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->findBy(array(

@@ -17,7 +17,7 @@ class RevisionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertLessThanOrEqual(new \DateTime(), $entity->getTimestamp());
 
-        $userClass = \SoliantEntityAudit\Module::getZfcUserEntity();
+        $userClass = \SoliantEntityAudit\Module::getModuleOptions()->getZfcUserEntityClassName();
         $user = new $userClass;
 
         $this->assertEquals($entity, $entity->setUser($user));

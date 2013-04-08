@@ -9,17 +9,11 @@ use Zend\Mvc\MvcEvent
     , SoliantEntityAudit\EventListener\LogRevision
     , SoliantEntityAudit\View\Helper\DateTimeFormatter
     , SoliantEntityAudit\View\Helper\EntityValues
-    , Zend\ServiceManager\ServiceManager
     ;
 
 class Module
 {
-    private static $serviceManager;
-
-    public static function getZfcUserEntity()
-    {
-        return self::getServiceManager()->get('zfcuser_module_options')->getUserEntityClass();
-    }
+    private static $moduleOptions;
 
     public function getAutoloaderConfig()
     {
@@ -40,17 +34,19 @@ class Module
 
     public function onBootstrap(MvcEvent $e)
     {
-        self::setServiceManager($e->getApplication()->getServiceManager());
+        $moduleOptions = $e->getApplication()->getServiceManager()->get('auditModuleOptions');
+
+        self::setModuleOptions($moduleOptions);
     }
 
-    public static function setServiceManager(ServiceManager $serviceManager)
+    public static function setModuleOptions(ModuleOptions $moduleOptions)
     {
-        self::$serviceManager = $serviceManager;
+        self::$moduleOptions = $moduleOptions;
     }
 
-    public static function getServiceManager()
+    public static function getModuleOptions()
     {
-        return self::$serviceManager;
+        return self::$moduleOptions;
     }
 
     public function getConfig()
@@ -66,6 +62,9 @@ class Module
                     $config = $serviceManager->get('Application')->getConfig();
                     $auditConfig = new ModuleOptions();
                     $auditConfig->setDefaults($config['audit']);
+                    $auditConfig->setEntityManager($serviceManager->get('doctrine.entitymanager.orm_default'));
+                    $auditConfig->setZfcUserEntityClassName($serviceManager->get('zfcuser_module_options')->getUserEntityClass());
+                    $auditConfig->setAuditService($serviceManager->get('auditService'));
 
                     $auth = $serviceManager->get('zfcuser_auth_service');
                     if ($auth->hasIdentity()) {

@@ -12,11 +12,6 @@ use Zend\Loader\StandardAutoloader
 
 class AuditAutoloader extends StandardAutoloader
 {
-    public function getServiceManager()
-    {
-        return \SoliantEntityAudit\Module::getServiceManager();
-    }
-
     /**
      * Dynamically scope an audit class
      *
@@ -25,29 +20,29 @@ class AuditAutoloader extends StandardAutoloader
      */
     public function loadClass($className, $type)
     {
-        $config = $this->getServiceManager()->get("auditModuleOptions");
-        $entityManager = $this->getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+        $entityManager = $moduleOptions->getEntityManager();
 
         $auditClass = new ClassGenerator();
 
         // Add revision reference getter and setter
-        $auditClass->addProperty($config->getRevisionEntityFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
+        $auditClass->addProperty($moduleOptions->getRevisionEntityFieldName(), null, PropertyGenerator::FLAG_PROTECTED);
         $auditClass->addMethod(
-            'get' . $config->getRevisionEntityFieldName(),
+            'get' . $moduleOptions->getRevisionEntityFieldName(),
             array(),
             MethodGenerator::FLAG_PUBLIC,
-            " return \$this->" .  $config->getRevisionEntityFieldName() . ";");
+            " return \$this->" .  $moduleOptions->getRevisionEntityFieldName() . ";");
 
         $auditClass->addMethod(
-            'set' . $config->getRevisionEntityFieldName(),
+            'set' . $moduleOptions->getRevisionEntityFieldName(),
             array('value'),
             MethodGenerator::FLAG_PUBLIC,
-            " \$this->" .  $config->getRevisionEntityFieldName() . " = \$value;\nreturn \$this;
+            " \$this->" .  $moduleOptions->getRevisionEntityFieldName() . " = \$value;\nreturn \$this;
             ");
-        $identifiers = array($config->getRevisionEntityFieldName());
+        $identifiers = array($moduleOptions->getRevisionEntityFieldName());
 
         //  Build a discovered many to many join class
-        $joinClasses = $config->getJoinClasses();
+        $joinClasses = $moduleOptions->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
             $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $className);
             $auditClass->setNamespaceName("SoliantEntityAudit\\Entity");
@@ -78,7 +73,7 @@ class AuditAutoloader extends StandardAutoloader
 
         // Verify this autoloader is used for target class
         #FIXME:  why is this sent work outside the set namespace?
-        foreach($config->getAuditedClassNames() as $targetClass => $targetClassOptions) {
+        foreach($moduleOptions->getAuditedClassNames() as $targetClass => $targetClassOptions) {
 
              $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $targetClass);
 

@@ -30,8 +30,7 @@ class AuditService extends AbstractHelper
     }
 
     public function getEntityValues($entity) {
-        $em = \SoliantEntityAudit\Module::getServiceManager()
-            ->get('doctrine.entitymanager.orm_default');
+        $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         $metadata = $em->getClassMetadata(get_class($entity));
         $fields = $metadata->getFieldNames();
@@ -48,7 +47,7 @@ class AuditService extends AbstractHelper
 
     public function getEntityIdentifierValues($entity, $cleanRevisionEntity = false)
     {
-        $entityManager = \SoliantEntityAudit\Module::getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $entityManager = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
         $metadataFactory = $entityManager->getMetadataFactory();
 
         // Get entity metadata - Audited entities will always have composite keys
@@ -73,9 +72,9 @@ class AuditService extends AbstractHelper
      */
     public function getRevisionEntities($entity)
     {
-        $entityManager = \SoliantEntityAudit\Module::getServiceManager()->get('doctrine.entitymanager.orm_default');
+        $entityManager = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
-        if (gettype($entity) != 'string' and in_array(get_class($entity), array_keys(\SoliantEntityAudit\Module::getServiceManager()->get('auditModuleOptions')->getAuditedClassNames()))) {
+        if (gettype($entity) != 'string' and in_array(get_class($entity), array_keys(\SoliantEntityAudit\Module::getModuleOptions()->getAuditedClassNames()))) {
             $auditEntityClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
             $identifiers = $this->getEntityIdentifierValues($entity);
         } elseif ($entity instanceof AbstractAudit) {

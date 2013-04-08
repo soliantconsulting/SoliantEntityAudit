@@ -49,7 +49,7 @@ class ModuleOptionsTest extends \PHPUnit_Framework_TestCase
         $moduleOptions = clone $serviceManager->get('auditModuleOptions');
         $moduleOptions->setDefaults(array());
 
-        $userClass = \SoliantEntityAudit\Module::getZfcUserEntity();
+        $userClass = \SoliantEntityAudit\Module::getModuleOptions()->getZfcUserEntityClassName();
         $user = new $userClass;
 
         $user->setEmail('test');
