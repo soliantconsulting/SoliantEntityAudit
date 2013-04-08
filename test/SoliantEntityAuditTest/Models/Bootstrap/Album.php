@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping\ClassMetadata
 class Album {
 
     private $id;
-    private $artist;
     private $title;
     private $songs;
     private $performers;
@@ -18,17 +17,6 @@ class Album {
     public function getId()
     {
         return $this->id;
-    }
-
-    public function getArtist()
-    {
-        return $this->artist;
-    }
-
-    public function setArtist($value)
-    {
-        $this->artist = $value;
-        return $this;
     }
 
     public function setTitle($value)
@@ -55,7 +43,6 @@ class Album {
         $builder = new ClassMetadataBuilder($metadata);
         $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
 
-        $builder->addField('artist', 'string', array('nullable' => true));
         $builder->addField('title', 'string');
         $builder->addOneToMany('songs', 'Song', 'album');
         $builder->addInverseManyToMany('performers', 'Performer', 'albums');

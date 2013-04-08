@@ -49,6 +49,7 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
 
         $moduleOptions->setAuditedClassNames(array(
             'SoliantEntityAuditTest\Models\LogRevision\Album' => array(),
+            'SoliantEntityAuditTest\Models\LogRevision\Performer' => array(),
             'SoliantEntityAuditTest\Models\LogRevision\Song' => array(),
         ));
 

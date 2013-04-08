@@ -67,7 +67,6 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
         $sm = Bootstrap::getApplication()->getServiceManager();
 
         $entity = new Album;
-        $entity->setArtist('artist test 1');
         $entity->setTitle('test 1');
 
         $em->persist($entity);
@@ -94,7 +93,6 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
         $sm = Bootstrap::getApplication()->getServiceManager();
 
         $entity = new Album;
-        $entity->setArtist('artist test 1');
         $entity->setTitle('test 1');
 
         $em->persist($entity);

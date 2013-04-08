@@ -95,8 +95,17 @@ class AuditAutoloader extends StandardAutoloader
             $auditClass->addProperty($field, null, PropertyGenerator::FLAG_PROTECTED);
         }
 
+        foreach ($auditedClassMetadata->getAssociationNames() as $associationName) {
+            $auditClass->addProperty($associationName, null, PropertyGenerator::FLAG_PROTECTED);
+            $fields[] = $associationName;
+        }
+
+/*
         // add join fields
         foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
+
+            continue;
+
             if (!$mapping['isOwningSide']) continue;
 
             # FIXME: add support for many to many join
@@ -116,6 +125,7 @@ class AuditAutoloader extends StandardAutoloader
                 }
             }
         }
+        */
 
         // Add exchange array method
         $setters = array();

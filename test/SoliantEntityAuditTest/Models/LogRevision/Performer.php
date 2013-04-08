@@ -38,6 +38,6 @@ class Performer {
         $builder = new ClassMetadataBuilder($metadata);
         $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
         $builder->addField('name', 'string');
-        $builder->addOwningManyToMany('albums', 'SoliantEntityAuditTest\\Models\\Bootstrap\\Album', 'performers');
+        $builder->addOwningManyToMany('albums', 'Album', 'performers');
     }
 }

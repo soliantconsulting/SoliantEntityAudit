@@ -17,13 +17,11 @@ class RevisionEntityPaginatorTest extends \PHPUnit_Framework_TestCase
 
         $entity = new Album;
         $entity->setTitle('Test 1');
-        $entity->setArtist('Artist Test 1');
 
         $em->persist($entity);
         $em->flush();
 
         $entity->setTitle('Change Test 2');
-        $entity->setArtist('Change Artist Test 2');
 
         $em->flush();
 

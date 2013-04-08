@@ -17,7 +17,6 @@ class RevisionEntityTest extends \PHPUnit_Framework_TestCase
         $sm = Bootstrap::getApplication()->getServiceManager();
 
         $entity = new Album;
-        $entity->setArtist('artist test 1');
         $entity->setTitle('test 1');
 
         $em->persist($entity);

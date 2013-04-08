@@ -14,6 +14,7 @@ return array(
 
         'entities' => array(
             'SoliantEntityAuditTest\Models\Bootstrap\Album' => array(),
+            'SoliantEntityAuditTest\Models\Bootstrap\Performer' => array(),
             'SoliantEntityAuditTest\Models\Bootstrap\Song' => array(),
         ),
     ),

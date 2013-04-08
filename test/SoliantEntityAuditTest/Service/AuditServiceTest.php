@@ -29,7 +29,6 @@ class AuditServiceTest extends \PHPUnit_Framework_TestCase
 
         $entity = new Album;
         $entity->setTitle('Test 1');
-        $entity->setArtist('Artist Test 1');
 
         $service->setComment('Test service comment is persisted on revision');
         $service = \SoliantEntityAudit\Module::getModuleOptions()->getAuditService();
@@ -62,9 +61,8 @@ return;
 
         $entity = new Album;
         $entity->setTitle('Test 1');
-        $entity->setArtist('Artist Test 1');
 
-        $this->assertEquals(array('artist' => 'Artist Test 1', 'title' => 'Test 1', 'id' => null), $service->getEntityValues($entity));
+        $this->assertEquals(array('id' => null, 'title' => 'Test 1'), $service->getEntityValues($entity));
     }
 
     public function testGetRevisionEntities() {
@@ -76,13 +74,11 @@ return;
 
         $entity = new Album;
         $entity->setTitle('Test 1');
-        $entity->setArtist('Artist Test 1');
 
         $em->persist($entity);
         $em->flush();
 
         $entity->setTitle('Test 2');
-        $entity->setArtist('Artist Test 2');
 
         $em->flush();
 
@@ -99,13 +95,11 @@ return;
 
         $entity = new Album;
         $entity->setTitle('Test 1');
-        $entity->setArtist('Artist Test 1');
 
         $em->persist($entity);
         $em->flush();
 
         $entity->setTitle('Test 2');
-        $entity->setArtist('Artist Test 2');
 
         $em->flush();
 
@@ -125,13 +119,11 @@ return;
 
         $entity = new Album;
         $entity->setTitle('Test 1');
-        $entity->setArtist('Artist Test 1');
 
         $em->persist($entity);
         $em->flush();
 
         $entity->setTitle('Test 2');
-        $entity->setArtist('Artist Test 2');
 
         $em->flush();
 

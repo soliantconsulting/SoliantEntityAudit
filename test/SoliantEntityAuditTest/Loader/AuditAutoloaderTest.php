@@ -43,6 +43,7 @@ class AuditAutoloaderTest extends \PHPUnit_Framework_TestCase
         $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
         $moduleOptions->setAuditedClassNames(array(
             'SoliantEntityAuditTest\Models\Autoloader\Album' => array(),
+            'SoliantEntityAuditTest\Models\Autoloader\Performer' => array(),
             'SoliantEntityAuditTest\Models\Autoloader\Song' => array(),
         ));
 
