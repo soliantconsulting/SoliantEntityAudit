@@ -44,8 +44,8 @@ class AuditAutoloader extends StandardAutoloader
         //  Build a discovered many to many join class
         $joinClasses = $moduleOptions->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
-            $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $className);
-            $auditClass->setNamespaceName("SoliantEntityAudit\\Entity");
+            $auditClassName = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $className);
+            $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
             $auditClass->setName($className);
             $auditClass->setExtendedClass('AbstractAudit');
 
@@ -62,14 +62,13 @@ class AuditAutoloader extends StandardAutoloader
                 'getAuditedEntityClass',
                 array(),
                 MethodGenerator::FLAG_PUBLIC,
-                " return '" .  addslashes($auditClassName) . "';"
+                " return '" . addslashes($auditClassName) . "';"
             );
 
-#            print_r($auditClass->generate());die();
+# print_r($auditClass->generate());die();
             eval($auditClass->generate());
             return;
         }
-
 
         // Verify this autoloader is used for target class
         #FIXME:  why is this sent work outside the set namespace?

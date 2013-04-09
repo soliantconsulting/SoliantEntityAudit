@@ -139,9 +139,9 @@ final class AuditDriver implements MappingDriver
 
             foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
                 if (isset($mapping['joinTable'])) {
-//                    $auditJoinTableClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
-//                    $auditEntities[] = $auditJoinTableClassName;
-//                    $moduleOptions->addJoinClass($auditJoinTableClassName, $mapping['joinTable']);
+                    $auditJoinTableClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
+                    $auditEntities[] = $auditJoinTableClassName;
+                    $moduleOptions->addJoinClass($auditJoinTableClassName, $mapping['joinTable']);
                 }
             }
         }
