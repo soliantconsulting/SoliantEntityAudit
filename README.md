@@ -84,7 +84,7 @@ Identifier column values from the audited entity will be added to defaults to ge
 
 ```
     <?php
-        $options = $this->auditOptions($revisionEntity->getTargetEntityClass());
+        $options = $this->auditEntityOptions($revisionEntity->getTargetEntityClass());
         $routeOptions = array_merge($options['defaults'], $revisionEntity->getEntityKeys());
     ?>
     <a class="btn btn-info" href="<?=
@@ -148,6 +148,11 @@ $view->auditRevisionEntityPaginator($page, $entity);
 Return a paginator for all Revision entities.
 ```
 $view->auditRevisionPaginator($page);
+```
+
+Returns the routing information for an entity by class name
+```
+$view->auditEntityOptions($entityClassName);
 ```
 
 
