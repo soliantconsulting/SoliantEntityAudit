@@ -20,6 +20,7 @@ class LogRevision implements EventSubscriber
     private $reexchangeEntities;
     private $collectionUpdates;
     private $inAuditTransaction;
+    private $many2many;
 
     public function getSubscribedEvents()
     {
@@ -78,6 +79,8 @@ class LogRevision implements EventSubscriber
 
     public function addCollectionUpdate($collection)
     {
+        if (!$this->collectionUpdates) $this->collectionUpdates = array();
+        if (in_array($collection, $this->collectionUpdates)) return;
         $this->collectionUpdates[] = $collection;
     }
 
@@ -155,6 +158,8 @@ class LogRevision implements EventSubscriber
 
     private function auditEntity($entity, $revisionType)
     {
+        $auditEntities = array();
+
         $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
         if (!in_array(get_class($entity), array_keys($moduleOptions->getAuditedClassNames())))
             return array();
@@ -183,7 +188,21 @@ class LogRevision implements EventSubscriber
             $revisionEntity->setAuditEntity($auditEntity);
         }
 
-        return array($auditEntity);
+        $auditEntities[] = $auditEntity;
+
+        // Map many to many
+        foreach ($this->getClassProperties($entity) as $key => $value) {
+
+            if ($value instanceof PersistentCollection) {
+                if (!$this->many2many) $this->many2many = array();
+                $this->many2many[] = array(
+                    'revisionEntity' => $revisionEntity,
+                    'collection' => $value,
+                );
+            }
+        }
+
+        return $auditEntities;
     }
 
     public function onFlush(OnFlushEventArgs $eventArgs)
@@ -206,11 +225,9 @@ class LogRevision implements EventSubscriber
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionDeletions() AS $col) {
             die('deletion.  If you reached this you should just try to figure out the next foreach block first.');
-            print_r($col);die();
         }
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionUpdates() AS $collectionToUpdate) {
-            die('scheduled collection updates');
             if ($collectionToUpdate instanceof PersistentCollection) {
                 $this->addCollectionUpdate($collectionToUpdate);
             }
@@ -223,7 +240,9 @@ class LogRevision implements EventSubscriber
     {
         if ($this->getEntities() and !$this->getInAuditTransaction()) {
             $this->setInAuditTransaction(true);
-            $entityManager = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
+
+            $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+            $entityManager = $moduleOptions->getEntityManager();
             $entityManager->beginTransaction();
 
             // Insert entites will trigger key generation and must be
@@ -240,21 +259,32 @@ class LogRevision implements EventSubscriber
             $entityManager->flush();
 
             foreach ($this->getEntities() as $entity) {
-
-                // Audit complete collections as a snapshot of an updated entity
-                # FIXME: many to many data are not populated in audit
-                foreach ($this->getCollectionUpdates() as $collection) {
-                    foreach ($this->getClassProperties($entity) as $key => $value) {
-                        if ($value instanceof PersistentCollection) {
-                            die('persistent collection found');
-                            continue;
-                        }
-                    }
-                }
-
                 $entityManager->persist($entity);
             }
 
+            // Persist many to many collections
+            foreach ($this->getCollectionUpdates() as $value) {
+                $mapping = $value->getMapping();
+                if (!$mapping['isOwningSide']) continue;
+
+                $joinClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
+                $moduleOptions->addJoinClass($joinClassName, $mapping);
+
+                foreach ($this->many2many as $map) {
+                    if ($map['collection'] == $value)
+                        $revisionEntity = $map['revisionEntity'];
+                }
+
+                foreach ($value->getSnapshot() as $element) {
+                    $audit = new $joinClassName();
+                    $values[$mapping['fieldName']] = $value->getOwner()->getId();
+                    $values[$mapping['inversedBy']] = $element->getId();
+                    #print_r($values);
+                    $audit->setRevisionEntity($revisionEntity);
+                    $audit->exchangeArray($values);
+                    $entityManager->persist($audit);
+                }
+            }
 
             $entityManager->flush();
 

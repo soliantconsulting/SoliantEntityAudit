@@ -39,32 +39,46 @@ class AuditAutoloader extends StandardAutoloader
             MethodGenerator::FLAG_PUBLIC,
             " \$this->" .  $moduleOptions->getRevisionEntityFieldName() . " = \$value;\nreturn \$this;
             ");
-        $identifiers = array($moduleOptions->getRevisionEntityFieldName());
 
         //  Build a discovered many to many join class
         $joinClasses = $moduleOptions->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
-            $auditClassName = 'ZF2EntityAudit\\Entity\\' . str_replace('\\', '_', $className);
             $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
             $auditClass->setName($className);
             $auditClass->setExtendedClass('AbstractAudit');
 
-            foreach ($joinClasses[$className]['joinColumns'] as $joinColumn) {
-                $auditClass->addProperty($joinColumn['name'], null, PropertyGenerator::FLAG_PROTECTED);
-            }
-
-            foreach ($joinClasses[$className]['inverseJoinColumns'] as $joinColumn) {
-                $auditClass->addProperty($joinColumn['name'], null, PropertyGenerator::FLAG_PROTECTED);
-            }
+            $auditClass->addProperty($joinClasses[$className]['fieldName'], null, PropertyGenerator::FLAG_PROTECTED);
+            $auditClass->addProperty($joinClasses[$className]['inversedBy'], null, PropertyGenerator::FLAG_PROTECTED);
 
             // Add function to return the entity class this entity audits
             $auditClass->addMethod(
                 'getAuditedEntityClass',
                 array(),
                 MethodGenerator::FLAG_PUBLIC,
-                " return '" . addslashes($auditClassName) . "';"
+                " return '" . addslashes($className) . "';"
             );
 
+// Add exchange array method
+        $setters = array();
+        foreach (array($joinClasses[$className]['fieldName'], $joinClasses[$className]['inversedBy']) as $fieldName) {
+            $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
+            $arrayCopy[] = "    \"$fieldName\"" . ' => $this->' . $fieldName;
+        }
+
+        $auditClass->addMethod(
+            'getArrayCopy',
+            array('data'),
+            MethodGenerator::FLAG_PUBLIC,
+            "return array(\n" . implode(",\n", $arrayCopy) . "\n);"
+        );
+
+        $auditClass->addMethod(
+            'exchangeArray',
+            array('data'),
+            MethodGenerator::FLAG_PUBLIC,
+            implode("\n", $setters)
+        );
+#echo '<pre>';
 # print_r($auditClass->generate());die();
             eval($auditClass->generate());
             return;

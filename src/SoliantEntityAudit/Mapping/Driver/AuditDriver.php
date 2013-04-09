@@ -60,17 +60,13 @@ final class AuditDriver implements MappingDriver
             $builder->addManyToOne($moduleOptions->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\RevisionEntity');
             $identifiers = array($moduleOptions->getRevisionEntityFieldName());
 
-            foreach ($joinClasses[$className]['joinColumns'] as $joinColumn) {
-                $builder->addField($joinColumn['name'], 'integer', array('nullable' => true));
-                $identifiers[] = $joinColumn['name'];
-            }
+            $builder->addField($joinClasses[$className]['inversedBy'], 'integer', array('nullable' => true, 'columnName' => $joinClasses[$className]['joinTableColumns'][0]));
+            $builder->addField($joinClasses[$className]['fieldName'], 'integer', array('nullable' => true, 'columnName' => $joinClasses[$className]['joinTableColumns'][1]));
 
-            foreach ($joinClasses[$className]['inverseJoinColumns'] as $joinColumn) {
-                $builder->addField($joinColumn['name'], 'integer', array('nullable' => true));
-                $identifiers[] = $joinColumn['name'];
-            }
+            $identifiers[] = $joinClasses[$className]['fieldName'];
+            $identifiers[] = $joinClasses[$className]['inversedBy'];
 
-            $metadata->setTableName($moduleOptions->getTableNamePrefix() . $joinClasses[$className]['name'] . $moduleOptions->getTableNameSuffix());
+            $metadata->setTableName($moduleOptions->getTableNamePrefix() . $joinClasses[$className]['joinTable']['name'] . $moduleOptions->getTableNameSuffix());
             $metadata->setIdentifier($identifiers);
             return;
         }
@@ -95,9 +91,8 @@ final class AuditDriver implements MappingDriver
             if (!$mapping['isOwningSide']) continue;
 
             if (isset($mapping['joinTable'])) {
+                #die('add field ' . $mapping['fieldName'] . ' mapped by ' . $mapping['joinTableColumns'][1] . ' inversedBy ' . $mapping['inversedBy'] . ' mapped by ' . $mapping['joinTableColumns'][0] );
                 continue;
-                # print_r($mapping['joinTable']);
-                # die('driver');
             }
 
             if (isset($mapping['joinTableColumns'])) {
@@ -141,7 +136,7 @@ final class AuditDriver implements MappingDriver
                 if (isset($mapping['joinTable'])) {
                     $auditJoinTableClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
                     $auditEntities[] = $auditJoinTableClassName;
-                    $moduleOptions->addJoinClass($auditJoinTableClassName, $mapping['joinTable']);
+                    $moduleOptions->addJoinClass($auditJoinTableClassName, $mapping);
                 }
             }
         }

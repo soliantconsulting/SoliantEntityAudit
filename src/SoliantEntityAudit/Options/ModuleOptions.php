@@ -59,9 +59,9 @@ class ModuleOptions
         $this->zfcUserEntityClassName = $className;
     }
 
-    public function addJoinClass($className, $mapping)
+    public function addJoinClass($fullyQualifiedAuditClassName, $mapping)
     {
-        $this->joinClasses[$className] = $mapping;
+        $this->joinClasses[$fullyQualifiedAuditClassName] = $mapping;
         return $this;
     }
 
