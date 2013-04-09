@@ -58,11 +58,23 @@ return array(
 );
 ```
 
-Use the Doctrine command line tool to update the database and create the auditing tables :
+Use the Doctrine command line tool to update the database and create the auditing tables:
 
 ```shell
 vendor/bin/doctrine-module orm:schema-tool:update
 ```
+
+
+Terminology
+-----------
+
+AuditEntity - A clone of a target auditable entity which holds the values for the target entity at the time a revision is created.
+
+Revision - An entity which stores the timestap and comment about a single entity manager flush which contains auditable entities.
+
+RevisionEntity - A mapping entity which maps an AuditEntity to a Revision and maps to a Target audited entity.  This entity can rehydrate a Target entity and AuditEntity.  This also stores the revision type when the Target was audited.  INS, UPD, and DEL map to insert, update, and delete.  The primary keys of the Target are stored as an array and can be used to rehydrate a Target.
+
+Target entity - An auditable entity specified as string in the audit configuration.
 
 
 Routing
@@ -116,11 +128,10 @@ This class provides the following:
 1. setComment();
     Set the comment for the next audit transaction.  When a comment is set it will be read at the time the audit Revision is created and added as the comment.
 
-2. getEntityValues($entity, $cleanRevision = false);
-    Returns all the fields and their values for the given entity.  Does not include many to many relations.
-    $cleanRevision is used internally to strip the reference to Revision from the results if a RevisionEntity is passed.
+2. getAuditEntityValues($auditEntity);
+    Returns all the fields and their values for the given audit entity.  Does not include many to many relations.
 
-3. getEntityIdentifierValues($entity, $cleanRevision = false);
+3. getEntityIdentifierValues($entity);
     Return all the identifying keys and values for an entity.
     
 4. getRevisionEntities($entity)
