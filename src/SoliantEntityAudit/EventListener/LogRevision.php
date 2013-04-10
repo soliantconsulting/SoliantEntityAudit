@@ -18,7 +18,7 @@ class LogRevision implements EventSubscriber
     private $revision;
     private $entities;
     private $reexchangeEntities;
-    private $collectionUpdates;
+    private $collections;
     private $inAuditTransaction;
     private $many2many;
 
@@ -77,17 +77,17 @@ class LogRevision implements EventSubscriber
         return $this->revisionEntities;
     }
 
-    public function addCollectionUpdate($collection)
+    public function addCollection($collection)
     {
-        if (!$this->collectionUpdates) $this->collectionUpdates = array();
-        if (in_array($collection, $this->collectionUpdates)) return;
-        $this->collectionUpdates[] = $collection;
+        if (!$this->collections) $this->collections = array();
+        if (in_array($collection, $this->collections)) return;
+        $this->collections[] = $collection;
     }
 
-    public function getCollectionUpdates()
+    public function getCollections()
     {
-        if (!$this->collectionUpdates) $this->collectionUpdates = array();
-        return $this->collectionUpdates;
+        if (!$this->collections) $this->collections = array();
+        return $this->collections;
     }
 
     public function setInAuditTransaction($setting)
@@ -140,16 +140,16 @@ class LogRevision implements EventSubscriber
             $property->setAccessible(true);
             $value = $property->getValue($entity);
 
+            // If a property is an object we probably are not mapping that to
+            // a field.  Do no special handing...
+            if ($value instanceof PersistentCollection) {
+            }
+
             // Set values to getId for classes
-            if ($value instanceof \StdClass and method_exists($value, 'getId')) {
+            if (gettype($value) == 'object' and method_exists($value, 'getId')) {
                 $value = $value->getId();
             }
 
-            // If a property is an object we probably are not mapping that to
-            // a field.  Do no special handing...
-#            if (gettype($value) == 'object') {
-##                $value = $value->getId();
-#            }
             $properties[$property->getName()] = $value;
         }
 
@@ -223,13 +223,15 @@ class LogRevision implements EventSubscriber
             $entities = array_merge($entities, $this->auditEntity($entity, 'DEL'));
         }
 
-        foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionDeletions() AS $col) {
-            die('deletion.  If you reached this you should just try to figure out the next foreach block first.');
+        foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionDeletions() AS $collectionToDelete) {
+            if ($collectionToDelete instanceof PersistentCollection) {
+                $this->addCollection($collectionToDelete);
+            }
         }
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionUpdates() AS $collectionToUpdate) {
             if ($collectionToUpdate instanceof PersistentCollection) {
-                $this->addCollectionUpdate($collectionToUpdate);
+                $this->addCollection($collectionToUpdate);
             }
         }
 
@@ -263,8 +265,9 @@ class LogRevision implements EventSubscriber
             }
 
             // Persist many to many collections
-            foreach ($this->getCollectionUpdates() as $value) {
+            foreach ($this->getCollections() as $value) {
                 $mapping = $value->getMapping();
+
                 if (!$mapping['isOwningSide']) continue;
 
                 $joinClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);

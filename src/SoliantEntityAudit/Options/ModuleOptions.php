@@ -71,6 +71,13 @@ class ModuleOptions
         return $this->joinClasses;
     }
 
+    public function resetJoinClasses($joinClasses = array())
+    {
+        $oldClasses = $this->joinClasses;
+        $this->joinClasses = $joinClasses;
+        return $oldClasses;
+    }
+
     public function getPaginatorLimit()
     {
         return $this->paginatorLimit;

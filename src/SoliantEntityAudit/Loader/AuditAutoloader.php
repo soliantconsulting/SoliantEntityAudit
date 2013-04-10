@@ -43,7 +43,7 @@ class AuditAutoloader extends StandardAutoloader
         //  Build a discovered many to many join class
         $joinClasses = $moduleOptions->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
-            $auditClass->setNamespaceName("ZF2EntityAudit\\Entity");
+            $auditClass->setNamespaceName("SoliantEntityAudit\\Entity");
             $auditClass->setName($className);
             $auditClass->setExtendedClass('AbstractAudit');
 
@@ -58,28 +58,28 @@ class AuditAutoloader extends StandardAutoloader
                 " return '" . addslashes($className) . "';"
             );
 
-// Add exchange array method
-        $setters = array();
-        foreach (array($joinClasses[$className]['fieldName'], $joinClasses[$className]['inversedBy']) as $fieldName) {
-            $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
-            $arrayCopy[] = "    \"$fieldName\"" . ' => $this->' . $fieldName;
-        }
+            // Add exchange array method
+            $setters = array();
+            foreach (array($joinClasses[$className]['fieldName'], $joinClasses[$className]['inversedBy']) as $fieldName) {
+                $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
+                $arrayCopy[] = "    \"$fieldName\"" . ' => $this->' . $fieldName;
+            }
 
-        $auditClass->addMethod(
-            'getArrayCopy',
-            array('data'),
-            MethodGenerator::FLAG_PUBLIC,
-            "return array(\n" . implode(",\n", $arrayCopy) . "\n);"
-        );
+            $auditClass->addMethod(
+                'getArrayCopy',
+                array(),
+                MethodGenerator::FLAG_PUBLIC,
+                "return array(\n" . implode(",\n", $arrayCopy) . "\n);"
+            );
 
-        $auditClass->addMethod(
-            'exchangeArray',
-            array('data'),
-            MethodGenerator::FLAG_PUBLIC,
-            implode("\n", $setters)
-        );
+            $auditClass->addMethod(
+                'exchangeArray',
+                array('data'),
+                MethodGenerator::FLAG_PUBLIC,
+                implode("\n", $setters)
+            );
 #echo '<pre>';
-# print_r($auditClass->generate());die();
+ #print_r($auditClass->generate());die();
             eval($auditClass->generate());
             return;
         }
@@ -113,33 +113,6 @@ class AuditAutoloader extends StandardAutoloader
             $fields[] = $associationName;
         }
 
-/*
-        // add join fields
-        foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
-
-            continue;
-
-            if (!$mapping['isOwningSide']) continue;
-
-            # FIXME: add support for many to many join
-            if (isset($mapping['joinTable'])) {
-                continue;
-            }
-
-            if (isset($mapping['joinTableColumns'])) {
-                foreach ($mapping['joinTableColumns'] as $field) {
-                    $auditClass->addProperty($mapping['fieldName'], null, PropertyGenerator::FLAG_PROTECTED);
-                    $fields[] = $mapping['fieldName'];
-                }
-            } elseif (isset($mapping['joinColumnFieldNames'])) {
-                foreach ($mapping['joinColumnFieldNames'] as $field) {
-                    $auditClass->addProperty($mapping['fieldName'], null, PropertyGenerator::FLAG_PROTECTED);
-                    $fields[] = $mapping['fieldName'];
-                }
-            }
-        }
-        */
-
         // Add exchange array method
         $setters = array();
         foreach ($fields as $fieldName) {
@@ -149,7 +122,7 @@ class AuditAutoloader extends StandardAutoloader
 
         $auditClass->addMethod(
             'getArrayCopy',
-            array('data'),
+            array(),
             MethodGenerator::FLAG_PUBLIC,
             "return array(\n" . implode(",\n", $arrayCopy) . "\n);"
         );

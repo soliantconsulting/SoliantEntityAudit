@@ -101,6 +101,8 @@ class IndexControllerTest extends \PHPUnit_Framework_TestCase
         $helper = $sm->get('viewhelpermanager')->get('auditCurrentRevisionEntity');
         $revisionEntity = $helper($entity);
 
+        if (!$revisionEntity) die('helper did not return current revision entity');
+
         $this->routeMatch->setParam('action', 'revision-entity');
         $this->routeMatch->setParam('controller', 'audit');
         $this->routeMatch->setParam('revisionEntityId', $revisionEntity->getId());

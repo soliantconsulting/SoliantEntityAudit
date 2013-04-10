@@ -91,7 +91,6 @@ final class AuditDriver implements MappingDriver
             if (!$mapping['isOwningSide']) continue;
 
             if (isset($mapping['joinTable'])) {
-                #die('add field ' . $mapping['fieldName'] . ' mapped by ' . $mapping['joinTableColumns'][1] . ' inversedBy ' . $mapping['inversedBy'] . ' mapped by ' . $mapping['joinTableColumns'][0] );
                 continue;
             }
 
@@ -133,7 +132,7 @@ final class AuditDriver implements MappingDriver
             $auditedClassMetadata = $metadataFactory->getMetadataFor($name);
 
             foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
-                if (isset($mapping['joinTable'])) {
+                if (isset($mapping['joinTable']['name'])) {
                     $auditJoinTableClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
                     $auditEntities[] = $auditJoinTableClassName;
                     $moduleOptions->addJoinClass($auditJoinTableClassName, $mapping);

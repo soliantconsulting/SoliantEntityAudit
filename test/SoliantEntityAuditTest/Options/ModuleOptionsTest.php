@@ -19,7 +19,6 @@ class ModuleOptionsTest extends \PHPUnit_Framework_TestCase
         $moduleOptions = clone $serviceManager->get('auditModuleOptions');
         $moduleOptions->setDefaults(array());
 
-        $this->assertEquals(array(), $moduleOptions->getJoinClasses());
         $this->assertEquals(20, $moduleOptions->getPaginatorLimit());
         $this->assertEquals('', $moduleOptions->getTableNamePrefix());
         $this->assertEquals('_audit', $moduleOptions->getTableNameSuffix());
@@ -27,6 +26,8 @@ class ModuleOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('RevisionEntity', $moduleOptions->getRevisionEntityTableName());
         $this->assertEquals('revision', $moduleOptions->getRevisionFieldName());
         $this->assertEquals('revisionEntity', $moduleOptions->getRevisionEntityFieldName());
+        $moduleOptions->setZfcUserEntityClassName($serviceManager->get('zfcuser_module_options')->getUserEntityClass());
+        $moduleOptions->setAuditService($serviceManager->get('auditService'));
     }
 
     public function testModuleOptionsAuditedEntityClasses()
