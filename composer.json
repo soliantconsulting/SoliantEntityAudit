@@ -1,5 +1,5 @@
 {
-    "name": "soliant/entity-audit",
+    "name": "soliantconsulting/entity-audit",
     "description": "Doctrine 2 Entity Auditing",
     "type": "zf-module",
     "license": "MIT",
