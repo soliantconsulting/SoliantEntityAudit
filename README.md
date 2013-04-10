@@ -24,7 +24,7 @@ Install
 Download SoliantEntityAudit with composer 
 
 ```php
-php composer.phar require "soliant/entity-audit": "dev-master"
+php composer.phar require "soliantconsulting/entity-audit": "dev-master"
 ```
 
 
