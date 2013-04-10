@@ -68,7 +68,7 @@ vendor/bin/doctrine-module orm:schema-tool:update
 Terminology
 -----------
 
-AuditEntity - A clone of a target auditable entity which holds the values for the target entity at the time a revision is created.
+AuditEntity - A generated entity which maps to the Target auditable entity.  This stores the values for the Target entity at the time a Revision is created.
 
 Revision - An entity which stores the timestap and comment about a single entity manager flush which contains auditable entities.
 
