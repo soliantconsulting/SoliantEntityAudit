@@ -1,7 +1,7 @@
 SoliantEntityAudit
 ==============
 
-[![Build Status](https://travis-ci.org/[TomHAnderson]/[SoliantEntityAudit].png)](https://travis-ci.org/[TomHAnderson]/[SoliantEntityAudit])
+[![Build Status](https://travis-ci.org/TomHAnderson/SoliantEntityAudit.png)](https://travis-ci.org/TomHAnderson/SoliantEntityAudit)
 
 An auditing module for Doctrine 2.  Requires ZfcUser to map revisions to users.  This module creates an entity to audit a specified target entity and tracks revisions to that target.
 
