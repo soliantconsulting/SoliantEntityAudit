@@ -8,3 +8,5 @@
 vendor
 data
 test/output
+composer.phar
+composer.lock
