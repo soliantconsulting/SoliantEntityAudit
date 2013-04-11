@@ -79,6 +79,14 @@ RevisionEntity - A mapping entity which maps an AuditEntity to a Revision and ma
 Target entity - An auditable entity specified as string in the audit configuration.
 
 
+Authentication 
+=======
+
+You may configure a custom entity to serve as the user entity for mapping revisions to users.  You may configure a custom authentication service too.  By default these map to ZfcUserDoctrineORM\Entity\User and zfcuser_auth_service.  For example to use a custom entity and service Db\Entity\User for an entity and Zend\Authentication\AuthenticationService would work well.
+
+The user entity must implement getDisplayName, getId, and getEmail.  The authentication service must implement hasIdentity and getIdentity which returns an instance of the current user entity.
+
+
 Routing
 -------
 
@@ -168,14 +176,5 @@ Returns the routing information for an entity by class name
 ```
 $view->auditEntityOptions($entityClassName);
 ```
-
-
-Authentication 
-=======
-
-You may configure a custom entity to serve as the user entity for mapping revisions to users.  You may configure a custom authentication service too.  By default these map to ZfcUserDoctrineORM\Entity\User and zfcuser_auth_service.  For example to use a custom entity and service Db\Entity\User for an entity and Zend\Authentication\AuthenticationService would work well.
-
-The user entity must implement getDisplayName, getId, and getEmail.  The authentication service must implement hasIdentity and getIdentity which returns an instance of the current user entity.
-
 
 Inspired by SimpleThings
