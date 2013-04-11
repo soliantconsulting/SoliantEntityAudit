@@ -9,8 +9,6 @@ return array(
         'revisionTableName' => 'Revision',
         'revisionEntityTableName' => 'RevisionEntity',
         
-        'entities' => array(
-        
         /*
          * Entities to audit are specified as array keys
             
