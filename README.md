@@ -171,8 +171,9 @@ $view->auditEntityOptions($entityClassName);
 Authentication 
 =======
 
-This module requires a configuration for a user entity class name and authentication service provider.  This allows support for any service provider using Zend\Authentication\AuthenticationService.  A service provider must provide hasIdentity and getIdentity and return an instance of the configured user entity class.
+You may configure a custom entity to serve as the user entity for mapping revisions to users.  You may configure a custom authentication service too.  By default these map to ZfcUserDoctrineORM\Entity\User and zfcuser_auth_service.  For example to use a custom entity and service Db\Entity\User for an entity and Zend\Authentication\AuthenticationService would work well.
 
+The user entity must implement getDisplayName, getId, and getEmail.  The authentication service must implement hasIdentity and getIdentity which returns an instance of the current user entity.
 
 
 Inspired by SimpleThings
