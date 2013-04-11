@@ -2,8 +2,7 @@
 
 namespace SoliantEntityAudit\Entity;
 
-use ZfcUser\Entity\UserInterface
-    , Doctrine\ORM\Mapping\ClassMetadata
+use Doctrine\ORM\Mapping\ClassMetadata
     , Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder
     , Zend\Code\Reflection\ClassReflection;
     ;

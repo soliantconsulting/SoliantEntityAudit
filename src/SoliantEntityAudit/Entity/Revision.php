@@ -2,8 +2,7 @@
 
 namespace SoliantEntityAudit\Entity;
 
-use ZfcUser\Entity\UserInterface
-    , Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
     ;
 
 class Revision
@@ -48,7 +47,7 @@ class Revision
         return $this->user;
     }
 
-    public function setUser(UserInterface $value)
+    public function setUser($value)
     {
         $this->user = $value;
         return $this;
