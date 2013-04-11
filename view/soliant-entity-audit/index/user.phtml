@@ -8,7 +8,7 @@
 if ($user) {
     $userId = $user->getId();
 ?>
-    <h1>Audit by user $this->escapeHtml($user->getDisplayName());</h1>
+    <h1>Audit by user <?= $this->escapeHtml($user->getDisplayName()); ?></h1>
 <?php
 } else {
     $userId = null;

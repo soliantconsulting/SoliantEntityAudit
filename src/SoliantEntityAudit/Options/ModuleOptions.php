@@ -27,7 +27,7 @@ class ModuleOptions
         $this->setAuditedClassNames(isset($config['entities']) ? $config['entities']: array());
         $this->setRevisionTableName(isset($config['revisionTableName']) ? $config['revisionTableName']: 'Revision');
         $this->setRevisionEntityTableName(isset($config['revisionEntityTableName']) ? $config['revisionEntityTableName']: 'RevisionEntity');
-        $this->setUserEntityClassName(isset($config['userEntityClassName']) ? $config['userEntityClassName']: 'ZfcUserDoctrineOrm\\Entity\\User');
+        $this->setUserEntityClassName(isset($config['userEntityClassName']) ? $config['userEntityClassName']: 'ZfcUserDoctrineORM\\Entity\\User');
         $this->setAuthenticationService(isset($config['authenticationService']) ? $config['authenticationService']: 'zfcuser_auth_service');
     }
 
