@@ -5,7 +5,7 @@
 >
     <testsuites>
         <testsuite name="Entity Audit Tests">
-            <directory>./test/SoliantEntityAuditTest</directory>
+            <directory>test/SoliantEntityAuditTest</directory>
         </testsuite>
     </testsuites>
 
@@ -19,9 +19,5 @@
             </exclude>
         </whitelist>
     </filter>
-
-    <logging>
-        <log type="coverage-html" target="./test/output/code_coverage" charset="UTF-8" yui="true" highlight="false" lowUpperBound="35" highLowerBound="70"/>
-    </logging>
 </phpunit>
 
