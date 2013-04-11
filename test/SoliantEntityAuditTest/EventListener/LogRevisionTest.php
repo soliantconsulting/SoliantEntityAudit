@@ -33,7 +33,8 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
         $config = Setup::createConfiguration($isDevMode, null, null);
 
         $chain = new DriverChain();
-        // zfc user is required
+
+        // Use ZFC User for authentication tests
         $chain->addDriver(new XmlDriver(__DIR__ . '/../../../vendor/zf-commons/zfc-user-doctrine-orm/config/xml/zfcuser')
             , 'ZfcUser\Entity');
         $chain->addDriver(new XmlDriver(__DIR__ . '/../../../vendor/zf-commons/zfc-user-doctrine-orm/config/xml/zfcuserdoctrineorm')

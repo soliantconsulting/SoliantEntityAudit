@@ -26,7 +26,8 @@ class ModuleOptionsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('RevisionEntity', $moduleOptions->getRevisionEntityTableName());
         $this->assertEquals('revision', $moduleOptions->getRevisionFieldName());
         $this->assertEquals('revisionEntity', $moduleOptions->getRevisionEntityFieldName());
-        $moduleOptions->setZfcUserEntityClassName($serviceManager->get('zfcuser_module_options')->getUserEntityClass());
+        $moduleOptions->setUserEntityClassName($serviceManager->get('zfcuser_module_options')->getUserEntityClass());
+        $moduleOptions->setAuthenticationService('ZfcUserDoctrineORM\\Entity\\User');
         $moduleOptions->setAuditService($serviceManager->get('auditService'));
     }
 
@@ -50,7 +51,7 @@ class ModuleOptionsTest extends \PHPUnit_Framework_TestCase
         $moduleOptions = clone $serviceManager->get('auditModuleOptions');
         $moduleOptions->setDefaults(array());
 
-        $userClass = \SoliantEntityAudit\Module::getModuleOptions()->getZfcUserEntityClassName();
+        $userClass = \SoliantEntityAudit\Module::getModuleOptions()->getUserEntityClassName();
         $user = new $userClass;
 
         $user->setEmail('test');

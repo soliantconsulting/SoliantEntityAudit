@@ -63,10 +63,9 @@ class Module
                     $auditConfig = new ModuleOptions();
                     $auditConfig->setDefaults($config['audit']);
                     $auditConfig->setEntityManager($serviceManager->get('doctrine.entitymanager.orm_default'));
-                    $auditConfig->setZfcUserEntityClassName($serviceManager->get('zfcuser_module_options')->getUserEntityClass());
                     $auditConfig->setAuditService($serviceManager->get('auditService'));
 
-                    $auth = $serviceManager->get('zfcuser_auth_service');
+                    $auth = $serviceManager->get($auditConfig->getAuthenticationService());
                     if ($auth->hasIdentity()) {
                         $auditConfig->setUser($auth->getIdentity());
                     }

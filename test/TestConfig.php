@@ -5,8 +5,11 @@ return array(
 
         'DoctrineModule',
         'DoctrineORMModule',
+
+        'ZfcBase',
         'ZfcUser',
         'ZfcUserDoctrineORM',
+
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(

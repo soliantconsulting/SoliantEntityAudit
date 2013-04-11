@@ -3,12 +3,15 @@ return array(
     'audit' => array(
         'datetime.format' => 'r',
         'paginator.limit' => 20,
+
+        'userEntityClassName' => 'ZfcUserDoctrineORM\Entity\User',
+        'authenticationService' => 'zfcuser_auth_service',
         
         'tableNamePrefix' => '',
         'tableNameSuffix' => '_audit',
         'revisionTableName' => 'Revision',
         'revisionEntityTableName' => 'RevisionEntity',
-        
+              
         /*
          * Entities to audit are specified as array keys
             

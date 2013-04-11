@@ -43,11 +43,11 @@ final class AuditDriver implements MappingDriver
             // Add association between RevisionEntity and Revision
             $builder->addOneToMany('revisionEntities', 'SoliantEntityAudit\\Entity\\RevisionEntity', 'revision');
 
-            // Add assoication between ZfcUser and Revision
-            $zfcUserMetadata = $metadataFactory->getMetadataFor($moduleOptions->getZfcUserEntityClassName());
+            // Add assoication between User and Revision
+            $userMetadata = $metadataFactory->getMetadataFor($moduleOptions->getUserEntityClassName());
             $builder
-                ->createManyToOne('user', $zfcUserMetadata->getName())
-                ->addJoinColumn('user_id', $zfcUserMetadata->getSingleIdentifierColumnName())
+                ->createManyToOne('user', $userMetadata->getName())
+                ->addJoinColumn('user_id', $userMetadata->getSingleIdentifierColumnName())
                 ->build();
 
             $metadata->setTableName($moduleOptions->getRevisionTableName());

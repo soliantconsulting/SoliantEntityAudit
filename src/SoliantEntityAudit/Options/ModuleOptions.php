@@ -17,7 +17,8 @@ class ModuleOptions
     private $user;
     private $entityManager;
     private $auditService;
-    private $zfcUserEntityClassName;
+    private $userEntityClassName;
+    private $authenticationService;
 
     public function setDefaults(array $config)
     {
@@ -27,6 +28,8 @@ class ModuleOptions
         $this->setAuditedClassNames(isset($config['entities']) ? $config['entities']: array());
         $this->setRevisionTableName(isset($config['revisionTableName']) ? $config['revisionTableName']: 'Revision');
         $this->setRevisionEntityTableName(isset($config['revisionEntityTableName']) ? $config['revisionEntityTableName']: 'RevisionEntity');
+        $this->setUserEntityClassName(isset($config['userEntityClassName']) ? $config['userEntityClassName']: 'ZfcUserDoctrineOrm\\Entity\\User');
+        $this->setAuthenticationService(isset($config['authenticationService']) ? $config['authenticationService']: 'zfcuser_auth_service');
     }
 
     public function getAuditService()
@@ -49,14 +52,26 @@ class ModuleOptions
         $this->entityManager = $entityManager;
     }
 
-    public function getZfcUserEntityClassName()
+    public function getAuthenticationService()
     {
-        return $this->zfcUserEntityClassName;
+        return $this->authenticationService;
     }
 
-    public function setZfcUserEntityClassName($className)
+    public function setAuthenticationService($value)
     {
-        $this->zfcUserEntityClassName = $className;
+        $this->authenticationService = $value;
+        return $this;
+    }
+
+    public function getUserEntityClassName()
+    {
+        return $this->userEntityClassName;
+    }
+
+    public function setUserEntityClassName($value)
+    {
+        $this->userEntityClassName = $value;
+        return $this;
     }
 
     public function addJoinClass($fullyQualifiedAuditClassName, $mapping)

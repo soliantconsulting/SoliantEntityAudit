@@ -7,6 +7,9 @@ return array(
         'datetime.format' => 'r',
         'paginator.limit' => 999999,
 
+        'userEntityClassName' => 'ZfcUserDoctrineORM\Entity\User',
+        'authenticationService' => 'zfcuser_auth_service',
+
         'tableNamePrefix' => '',
         'tableNameSuffix' => '_audit',
         'revisionTableName' => 'Revision',

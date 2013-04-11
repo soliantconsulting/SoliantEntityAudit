@@ -34,7 +34,7 @@ class IndexController extends AbstractActionController
         $userId = (int)$this->getEvent()->getRouteMatch()->getParam('userId');
 
         $user = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager()
-            ->getRepository(\SoliantEntityAudit\Module::getModuleOptions()->getZfcUserEntityClassName())->find($userId);
+            ->getRepository(\SoliantEntityAudit\Module::getModuleOptions()->getUserEntityClassName())->find($userId);
 
         return array(
             'page' => $page,

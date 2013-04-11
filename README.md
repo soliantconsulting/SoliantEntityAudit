@@ -168,10 +168,11 @@ $view->auditEntityOptions($entityClassName);
 ```
 
 
-ZfcUser 
+Authentication 
 =======
 
-ZfcUser integration maps revisions to users if a user is logged in.  Auditing of revisions without a valid user are mapped as anonymous.
+This module requires a configuration for a user entity class name and authentication service provider.  This allows support for any service provider using Zend\Authentication\AuthenticationService.  A service provider must provide hasIdentity and getIdentity and return an instance of the configured user entity class.
+
 
 
 Inspired by SimpleThings
