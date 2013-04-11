@@ -25,6 +25,9 @@
         "doctrine/doctrine-orm-module": "dev-master"
     },
     "require-dev": {
+        "zf-commons/zfc-user": "0.1.1",
+        "zf-commons/zfc-user-doctrine-orm": "dev-master",
+
         "phpunit/phpunit": "3.7.14"
     },
     "autoload": {

@@ -170,7 +170,7 @@ class ModuleOptions
         return $this;
     }
 
-    public function setUser(ZfcUserInterface $user)
+    public function setUser($user)
     {
         $this->user = $user;
         return $this;
