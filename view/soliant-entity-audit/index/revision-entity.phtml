@@ -93,7 +93,7 @@
                         if ($this->revisionEntity->getRevision()->getUser()) {
                             echo $this->gravatar($this->revisionEntity->getRevision()->getUser()->getEmail(), array('img_size' => 24));
                             echo ' ';
-                            echo $this->zfcUserDisplayName($this->revisionEntity->getRevision()->getUser());
+                            echo $this->escapeHtml($this->revisionEntity->getRevision()->getUser()->getDisplayName());
                         } else {
                             echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
                             echo ' Anonymous';
@@ -263,7 +263,7 @@
                             if ($rev->getRevision()->getUser()) {
                                 echo $this->gravatar($rev->getRevision()->getUser()->getEmail(), array('img_size' => 24));
                                 echo ' ';
-                                echo $this->zfcUserDisplayName($rev->getRevision()->getUser());
+                                echo $this->escapeHtml($rev->getRevision()->getUser()->getDisplayName());
                             } else {
                                 echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
                                 echo ' Anonymous';

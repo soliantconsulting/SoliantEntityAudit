@@ -1,10 +1,42 @@
 <?php
+
+/**
+ * bjyauthorize route guards for reference
+ *
+   array('route' => 'audit', 'roles' => array('user')),
+   array('route' => 'audit/page', 'roles' => array('user')),
+   array('route' => 'audit/user', 'roles' => array('user')),
+   array('route' => 'audit/revisions', 'roles' => array('user')),
+   array('route' => 'audit/revision-entity', 'roles' => array('user')),
+   array('route' => 'audit/entity', 'roles' => array('user')),
+   array('route' => 'audit/compare', 'roles' => array('user')),
+*/
+
+
 return array(
     'audit' => array(
         'datetime.format' => 'r',
         'paginator.limit' => 20,
 
+        /**
+         * The userEntityClassName is a string for the doctrine entity class
+         * identifying a user in your application.
+         * 
+         * This class MUST implement:
+            $user->getId()
+            $user->getDisplayName()
+            $user->getEmail()
+         * No interface is provided so an out-of-the-box implementation of ZfcUser
+         * will work without adding an interface to define these functions.
+         * *No validation of implementation of these functions is made.*
+         */
         'userEntityClassName' => 'ZfcUserDoctrineORM\Entity\User',
+
+        /**
+         * The authentication service defaults to ZfcUser but if your application 
+         * user servcie implements Zend\Authentication\AuthenticationService that's
+         * fine too.
+         */
         'authenticationService' => 'zfcuser_auth_service',
         
         'tableNamePrefix' => '',

@@ -120,7 +120,7 @@ foreach ($paginator as $revisionEntity) {
                         if ($revisionEntity->getRevision()->getUser()) {
                             echo $this->gravatar($revisionEntity->getRevision()->getUser()->getEmail(), array('img_size' => 24));
                             echo ' ';
-                            echo $this->zfcUserDisplayName($revisionEntity->getRevision()->getUser());
+                            echo $this->escapeHtml($revisionEntity->getRevision()->getUser()->getDisplayName());
                         } else {
                             echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
                             echo ' Anonymous';

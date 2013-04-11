@@ -1,8 +1,7 @@
 <?php
 
 namespace SoliantEntityAudit\Options;
-use ZfcUser\Entity\UserInterface as ZfcUserInterface
-    , Doctrine\ORM\EntityManager
+use Doctrine\ORM\EntityManager
     , SoliantEntityAudit\Service\AuditService
     ;
 

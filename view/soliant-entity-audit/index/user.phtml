@@ -8,7 +8,7 @@
 if ($user) {
     $userId = $user->getId();
 ?>
-    <h1>Audit by user <?= $this->zfcUserDisplayName($user); ?></h1>
+    <h1>Audit by user $this->escapeHtml($user->getDisplayName());</h1>
 <?php
 } else {
     $userId = null;
@@ -138,7 +138,7 @@ if ($user) {
                         if ($revision->getUser()) {
                             echo $this->gravatar($revision->getUser()->getEmail(), array('img_size' => 24));
                             echo ' ';
-                            echo $this->zfcUserDisplayName($revision->getUser());
+                            echo $this->escapeHtml($revision->getUser()->getDisplayName());
                         } else {
                             echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
                             echo ' Anonymous';
