@@ -280,8 +280,8 @@ class LogRevision implements EventSubscriber
 
                 foreach ($value->getSnapshot() as $element) {
                     $audit = new $joinClassName();
-                    $values[$mapping['fieldName']] = $value->getOwner()->getId();
-                    $values[$mapping['inversedBy']] = $element->getId();
+                    $values[$mapping['inversedBy']] = $value->getOwner()->getId();
+                    $values[$mapping['fieldName']] = $element->getId();
                     #print_r($values);
                     $audit->setRevisionEntity($revisionEntity);
                     $audit->exchangeArray($values);
