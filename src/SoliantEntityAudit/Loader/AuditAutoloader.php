@@ -111,8 +111,20 @@ class AuditAutoloader extends StandardAutoloader
 
         foreach ($auditedClassMetadata->getAssociationNames() as $associationName) {
             $auditClass->addProperty($associationName, null, PropertyGenerator::FLAG_PROTECTED);
-            $fields[] = $associationName;
         }
+
+
+        $auditClass->addMethod(
+            'getAssociationMappings',
+            array(),
+            MethodGenerator::FLAG_PUBLIC,
+            "return unserialize('" . serialize($auditedClassMetadata->getAssociationMappings()) . "');"
+        );
+
+#        echo '<pre>';
+#        print_r($auditedClassMetadata->getAssociationMappings());
+#        die();
+
 
         // Add exchange array method
         $setters = array();
@@ -151,6 +163,8 @@ class AuditAutoloader extends StandardAutoloader
 #            echo($auditClass->generate());
 
         eval($auditClass->generate());
+
+#            die();
 
         return true;
     }

@@ -29,11 +29,13 @@ class AuditService extends AbstractHelper
         return $this;
     }
 
-    public function getEntityValues($entity) {
+    public function getEntityValues(AbstractAudit $entity) {
         $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         $metadata = $em->getClassMetadata(get_class($entity));
         $fields = $metadata->getFieldNames();
+
+#        $targetEntityMetadata = $em->getClassMetadata($entity->getRevisionEntity()->getTargetEntity());
 
         $return = array();
         foreach ($fields AS $fieldName) {
@@ -43,6 +45,43 @@ class AuditService extends AbstractHelper
         ksort($return);
 
         return $return;
+    }
+
+    public function getEntityAssociations(AbstractAudit $entity)
+    {
+        $associations = array();
+        foreach ($entity->getAssociationMappings() as $mapping) {
+            $associations[] = $mapping['fieldName'];
+        }
+
+        return $associations;
+    }
+
+    public function getAssociationRevisionEntity(AbstractAudit $entity, $field, $value) {
+        $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
+
+        foreach ($entity->getAssociationMappings() as $mapping) {
+            if ($mapping['fieldName'] == $field) {
+
+                $qb = $em->createQueryBuilder();
+                $qb->select('revisionEntity')
+                    ->from('SoliantEntityAudit\\Entity\\RevisionEntity', 'revisionEntity')
+                    ->innerJoin('revisionEntity.revision', 'revision')
+                    ->andWhere('revisionEntity.targetEntityClass = ?1')
+                    ->setParameter(1, $mapping['targetEntity'])
+                    ->andWhere('revisionEntity.entityKeys = ?2')
+                    ->setParameter(2, serialize(array('id' => $value)))
+                    ->andWhere('revision.timestamp <= ?3')
+                    ->setParameter(3, $entity->getRevisionEntity()->getRevision()->getTimestamp())
+                    ->orderBy('revision.timestamp', 'DESC')
+                    ->setMaxResults(1);
+
+                return $qb->getQuery()->getSingleResult();
+            }
+
+        }
+
+        return;
     }
 
     public function getEntityIdentifierValues($entity, $cleanRevisionEntity = false)

@@ -120,11 +120,66 @@
             <tr>
                 <td><?php  echo $this->escapeHtml($field); ?></td>
                 <td>
-                    <?php if ($value instanceof \DateTime): ?>
-                        <?php echo  $this->AuditDateTimeFormatter($value); ?>
-                    <?php else : ?>
-                        <?php  echo $this->escapeHtml($value); ?>
-                    <?php endif; ?>
+                <?php
+
+                    // Is this an association?
+                    if (in_array($field, $this->auditService()->getEntityAssociations($this->revisionEntity->getAuditEntity()))) {
+                        $associationRevisionEntity = $this->auditService()->getAssociationRevisionEntity($this->revisionEntity->getAuditEntity(), $field, $value);
+
+                        if ($associationRevisionEntity) {
+                        ?>
+
+                    <a class="btn btn-<?php
+                        switch ($associationRevisionEntity->getRevisionType()) {
+                            case 'INS':
+                                echo 'success';
+                                break;
+                            case 'UPD':
+                                echo 'warning';
+                                break;
+                            case 'DEL':
+                                echo 'danger';
+                                break;
+                            default:
+                                echo 'info';
+                        }
+                    ?>"
+                    href="<?=
+                        $this->url(
+                            'audit/revision-entity',
+                            array(
+                                'revisionEntityId' => $associationRevisionEntity->getId(),
+                            )
+                        );?>"
+                    >
+
+                        (<?= $associationRevisionEntity->getId(); ?>)
+
+                        <?= $this->escapeHtml($associationRevisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
+                        <div class="entityKeys">
+                            <?php
+                            $rows = array();
+                            foreach($associationRevisionEntity->getEntityKeys() as $key => $value) {
+                                $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+                            }
+                            echo implode(', ', $rows);
+                            ?>
+                        </div>
+                    </a>
+                        <?php
+                        }
+                    } else {
+                        ?>
+                        <?php if ($value instanceof \DateTime): ?>
+                            <?php echo  $this->AuditDateTimeFormatter($value); ?>
+                        <?php else : ?>
+                            <?php  echo $this->escapeHtml($value); ?>
+                        <?php endif; ?>
+
+                        <?php
+
+                    }
+                    ?>
                 </td>
             </tr>
         <?php
