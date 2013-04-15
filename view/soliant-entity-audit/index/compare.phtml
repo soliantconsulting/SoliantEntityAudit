@@ -16,78 +16,12 @@
         " class="btn btn-primary"><?php echo $this->escapeHtml($revisionEntity_old->getAuditEntity()->getAuditedEntityClass()); ?></a>
         between
 
-            <a class="btn btn-<?php
-                switch ($revisionEntity_old->getRevisionType()) {
-                    case 'INS':
-                        echo 'success';
-                        break;
-                    case 'UPD':
-                        echo 'warning';
-                        break;
-                    case 'DEL':
-                        echo 'danger';
-                        break;
-                    default:
-                        echo 'info';
-                }
-            ?>" href="<?=
-            $this->url(
-                'audit/revision-entity',
-                array(
-                    'revisionEntityId' => $this->revisionEntity_old->getId(),
-                )
-            );?>"
-        >
-            (<?= $revisionEntity_old->getId(); ?>)
-            <?= $this->escapeHtml($this->revisionEntity_old->getAuditEntity()->getAuditedEntityClass()); ?>
-            <div class="entityKeys">
-                <?php
-                $rows = array();
-                foreach($revisionEntity_old->getEntityKeys() as $key => $value) {
-                    $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
-                }
-                echo implode(', ', $rows);
-                ?>
-            </div>
-
-        </a>
+            <?= $this->auditRevisionEntityLink($revisionEntity_old); ?>
 
         and
 
-            <a class="btn btn-<?php
-                switch ($revisionEntity_new->getRevisionType()) {
-                    case 'INS':
-                        echo 'success';
-                        break;
-                    case 'UPD':
-                        echo 'warning';
-                        break;
-                    case 'DEL':
-                        echo 'danger';
-                        break;
-                    default:
-                        echo 'info';
-                }
-            ?>" href="<?=
-            $this->url(
-                'audit/revision-entity',
-                array(
-                    'revisionEntityId' => $this->revisionEntity_new->getId(),
-                )
-            );?>"
-        >
-            (<?= $revisionEntity_new->getId(); ?>)
-            <?= $this->escapeHtml($this->revisionEntity_old->getAuditEntity()->getAuditedEntityClass()); ?>
-            <div class="entityKeys">
-                <?php
-                $rows = array();
-                foreach($revisionEntity_new->getEntityKeys() as $key => $value) {
-                    $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
-                }
-                echo implode(', ', $rows);
-                ?>
-            </div>
-        </a>
+            <?= $this->auditRevisionEntityLink($revisionEntity_new); ?>
+
     </caption>
     <thead>
         <tr>
@@ -174,40 +108,7 @@
             </td>
 
             <td>
-                <a class="btn btn-<?php
-                    switch ($revisionEntity_old->getRevisionType()) {
-                        case 'INS':
-                            echo 'success';
-                            break;
-                        case 'UPD':
-                            echo 'warning';
-                            break;
-                        case 'DEL':
-                            echo 'danger';
-                            break;
-                        default:
-                            echo 'info';
-                    }
-                ?>" href="<?=
-            $this->url(
-                'audit/revision-entity',
-                array(
-                    'revisionEntityId' => $revisionEntity_old->getId(),
-                )
-            );?>">
-                (<?= $revisionEntity_old->getId(); ?>)
-                <?= $this->escapeHtml($this->revisionEntity_old->getAuditEntity()->getAuditedEntityClass()); ?>
-                <div class="entityKeys">
-                    <?php
-                    $rows = array();
-                    foreach($revisionEntity_old->getEntityKeys() as $key => $value) {
-                        $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
-                    }
-                    echo implode(', ', $rows);
-                    ?>
-                </div>
-            </a>
-
+                <?= $this->auditRevisionEntityLink($revisionEntity_old); ?>
            </td>
 
         </tr>
@@ -257,41 +158,8 @@
 
             </td>
             <td>
-                <a class="btn btn-<?php
-                    switch ($revisionEntity_new->getRevisionType()) {
-                        case 'INS':
-                            echo 'success';
-                            break;
-                        case 'UPD':
-                            echo 'warning';
-                            break;
-                        case 'DEL':
-                            echo 'danger';
-                            break;
-                        default:
-                            echo 'info';
-                    }
-                ?>" href="<?=
-            $this->url(
-                'audit/revision-entity',
-                array(
-                    'revisionEntityId' => $revisionEntity_new->getId(),
-                )
-            );?>">
-                (<?= $revisionEntity_new->getId(); ?>)
-                <?= $this->escapeHtml($this->revisionEntity_new->getAuditEntity()->getAuditedEntityClass()); ?>
-                <div class="entityKeys">
-                    <?php
-                    $rows = array();
-                    foreach($revisionEntity_new->getEntityKeys() as $key => $value) {
-                        $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
-                    }
-                    echo implode(', ', $rows);
-                    ?>
-                </div>
-            </a>
-
-           </td>
+                <?= $this->auditRevisionEntityLink($revisionEntity_new); ?>
+            </td>
         </tr>
         <tr>
             <th>Field</th>

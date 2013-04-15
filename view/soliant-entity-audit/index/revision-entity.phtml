@@ -27,56 +27,9 @@
                 </a>
 
             </td>
+
             <td>
-
-                <a class="btn btn-<?php
-                    switch ($revisionEntity->getRevisionType()) {
-                        case 'INS':
-                            echo 'success';
-                            break;
-                        case 'UPD':
-                            echo 'warning';
-                            break;
-                        case 'DEL':
-                            echo 'danger';
-                            break;
-                        default:
-                            echo 'info';
-                    }
-                ?>"
-                    href="<?=
-                        $this->url(
-                            'audit/revision-entity',
-                            array(
-                                'revisionEntityId' => $this->revisionEntity->getId(),
-                            )
-                        );?>"
-                    >
-
-                        (<?= $this->revisionEntity->getId(); ?>)
-
-                        <?= $this->escapeHtml($this->revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
-                        <div class="entityKeys">
-                            <?php
-                            $rows = array();
-                            foreach($revisionEntity->getEntityKeys() as $key => $value) {
-                                $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
-                            }
-                            echo implode(', ', $rows);
-                            ?>
-                        </div>
-                    </a>
-
-                    <?php
-                    if ($options = $this->auditEntityOptions($revisionEntity->getTargetEntityClass())) {
-                        $routeOptions = array_merge($options['defaults'], $revisionEntity->getEntityKeys());
-                    ?>
-                        <a class="btn btn-info" href="<?=
-                            $this->url($options['route'], $routeOptions);
-                        ?>">Data</a>
-                    <?php
-                    }
-                    ?>
+                <?= $this->auditRevisionEntityLink($revisionEntity); ?>
             </td>
 
             <td><?= $this->escapeHtml($this->revisionEntity->getRevision()->getComment()); ?></td>
@@ -127,57 +80,8 @@
                         $associationRevisionEntity = $this->auditService()->getAssociationRevisionEntity($this->revisionEntity->getAuditEntity(), $field, $value);
 
                         if ($associationRevisionEntity) {
-                        ?>
-
-                    <a class="btn btn-<?php
-                        switch ($associationRevisionEntity->getRevisionType()) {
-                            case 'INS':
-                                echo 'success';
-                                break;
-                            case 'UPD':
-                                echo 'warning';
-                                break;
-                            case 'DEL':
-                                echo 'danger';
-                                break;
-                            default:
-                                echo 'info';
+                            echo $this->auditRevisionEntityLink($associationRevisionEntity);
                         }
-                    ?>"
-                    href="<?=
-                        $this->url(
-                            'audit/revision-entity',
-                            array(
-                                'revisionEntityId' => $associationRevisionEntity->getId(),
-                            )
-                        );?>"
-                    >
-
-                        (<?= $associationRevisionEntity->getId(); ?>)
-
-                        <?= $this->escapeHtml($associationRevisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
-                        <div class="entityKeys">
-                            <?php
-                            $rows = array();
-                            foreach($associationRevisionEntity->getEntityKeys() as $key => $value) {
-                                $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
-                            }
-                            echo implode(', ', $rows);
-                            ?>
-                        </div>
-                    </a>
-                        <?php
-                        }
-                    } else {
-                        ?>
-                        <?php if ($value instanceof \DateTime): ?>
-                            <?php echo  $this->AuditDateTimeFormatter($value); ?>
-                        <?php else : ?>
-                            <?php  echo $this->escapeHtml($value); ?>
-                        <?php endif; ?>
-
-                        <?php
-
                     }
                     ?>
                 </td>
@@ -337,41 +241,7 @@
                 </td>
 
                 <td>
-                    <a href="<?=
-                        $this->url('audit/revision-entity',
-                            array(
-                                'revisionEntityId' => $rev->getId()
-                            )
-                        );
-                    ?>" class="btn btn-<?php
-                    switch ($rev->getRevisionType()) {
-                        case 'INS':
-                            echo 'success';
-                            break;
-                        case 'UPD':
-                            echo 'warning';
-                            break;
-                        case 'DEL':
-                            echo 'danger';
-                            break;
-                        default:
-                            echo 'info';
-                    }
-                ?>">
-                        (<?= $rev->getId(); ?>)
-
-                        <?= $this->escapeHtml($this->revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
-                        <div class="entityKeys">
-                            <?php
-                            $rows = array();
-                            foreach($revisionEntity->getEntityKeys() as $key => $value) {
-                                $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
-                            }
-                            echo implode(', ', $rows);
-                            ?>
-                        </div>
-
-                    </a>
+                    <?= $this->auditRevisionEntityLink($rev); ?>
                 </td>
 
                 <td><?= $this->escapeHtml($rev->getRevision()->getComment()); ?></td>

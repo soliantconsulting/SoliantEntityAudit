@@ -1,0 +1,58 @@
+<a class="btn btn-<?php
+    switch ($this->revisionEntity->getRevisionType()) {
+        case 'INS':
+            echo 'success';
+            break;
+        case 'UPD':
+            echo 'warning';
+            break;
+        case 'DEL':
+            echo 'danger';
+            break;
+        default:
+            echo 'info';
+    }
+?>"
+    href="<?=
+        $this->url(
+            'audit/revision-entity',
+            array(
+                'revisionEntityId' => $this->revisionEntity->getId(),
+            )
+        );?>"
+    >
+
+    <?php
+    if ($this->revisionEntity->getTitle()) {
+    ?>
+        <strong><?= $this->escapeHtml($this->revisionEntity->getTitle()); ?></strong>
+        <br>
+    <?php
+    }
+    ?>
+
+    (<?= $this->revisionEntity->getId(); ?>)
+
+
+    <?= $this->escapeHtml($this->revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
+    <div class="entityKeys">
+        <?php
+        $rows = array();
+        foreach($revisionEntity->getEntityKeys() as $key => $value) {
+            $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+        }
+        echo implode(', ', $rows);
+        ?>
+    </div>
+</a>
+
+    <?php
+    if ($options = $this->auditEntityOptions($this->revisionEntity->getTargetEntityClass())) {
+        $routeOptions = array_merge($options['defaults'], $this->revisionEntity->getEntityKeys());
+    ?>
+        <a class="btn btn-info" href="<?=
+            $this->url($options['route'], $routeOptions);
+        ?>">Data</a>
+    <?php
+    }
+    ?>

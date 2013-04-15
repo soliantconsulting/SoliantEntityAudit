@@ -168,13 +168,11 @@ class LogRevision implements EventSubscriber
         $auditEntity = new $auditEntityClass();
         $auditEntity->exchangeArray($this->getClassProperties($entity));
 
-
-#var_dump($this->getClassProperties($entity));
-
         $revisionEntity = new RevisionEntityEntity();
         $revisionEntity->setRevision($this->getRevision());
         $this->getRevision()->getRevisionEntities()->add($revisionEntity);
         $revisionEntity->setRevisionType($revisionType);
+        if (method_exists($entity, 'auditTitle')) $revisionEntity->setTitle($entity->auditTitle());
         $this->addRevisionEntity($revisionEntity);
 
         $revisionEntitySetter = 'set' . $moduleOptions->getRevisionEntityFieldName();

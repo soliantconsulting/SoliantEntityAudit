@@ -26,6 +26,9 @@ class RevisionEntity
     // The type of action, INS, UPD, DEL
     private $revisionType;
 
+    // Fetched from entity::auditTitle() if exists
+    private $title;
+
     public function getId()
     {
         return $this->id;
@@ -117,5 +120,17 @@ class RevisionEntity
                 ->getRepository($this->getAuditEntityClass())
                     ->findOneBy($this->getEntityKeys())->getAuditedEntityClass()
             )->findOneBy($this->getEntityKeys());
+    }
+
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function setTitle($value)
+    {
+        $this->title = substr($value, 0, 255);
+
+        return $this;
     }
 }
