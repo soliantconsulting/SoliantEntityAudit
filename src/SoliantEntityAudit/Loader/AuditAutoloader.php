@@ -103,6 +103,9 @@ class AuditAutoloader extends StandardAutoloader
 
         $auditedClassMetadata = $metadataFactory->getMetadataFor($currentClass);
         $fields = $auditedClassMetadata->getFieldNames();
+        $identifiers = $auditedClassMetadata->getFieldNames();
+
+        $service = \SoliantEntityAudit\Module::getModuleOptions()->getAuditService();
 
         // Generate audit entity
         foreach ($fields as $field) {
@@ -121,15 +124,10 @@ class AuditAutoloader extends StandardAutoloader
             "return unserialize('" . serialize($auditedClassMetadata->getAssociationMappings()) . "');"
         );
 
-#        echo '<pre>';
-#        print_r($auditedClassMetadata->getAssociationMappings());
-#        die();
-
-
         // Add exchange array method
         $setters = array();
         foreach ($fields as $fieldName) {
-            $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
+            if (!$auditedClassMetadata->isIdentifier($fieldName)) $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
             $arrayCopy[] = "    \"$fieldName\"" . ' => $this->' . $fieldName;
         }
 
