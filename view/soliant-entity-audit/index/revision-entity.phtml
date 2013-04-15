@@ -185,6 +185,75 @@
         <?php
             }
         ?>
+
+        <?php
+        if ($this->auditService()->getEntityAssociations($this->revisionEntity->getAuditEntity())) {
+        ?>
+            <tr>
+                <th>Associations</th>
+                <th>Link</th>
+            </tr>
+
+
+            <?php
+                foreach($this->auditService()->getEntityAssociations($this->revisionEntity->getAuditEntity()) as $field => $value) {
+                    if (!isset($value['joinTable'])) continue;
+            ?>
+                <tr>
+                    <td><?php  echo $this->escapeHtml($field); ?></td>
+                    <td>
+
+                    <a class="btn btn-<?php
+                        switch ($this->revisionEntity->getRevisionType()) {
+                            case 'INS':
+                                echo 'success';
+                                break;
+                            case 'UPD':
+                                echo 'warning';
+                                break;
+                            case 'DEL':
+                                echo 'danger';
+                                break;
+                            default:
+                                echo 'info';
+                        }
+                    ?>"
+                    href="<?=
+                        $this->url(
+                            'audit/revision-association',
+                            array(
+                                'revisionEntityId' => $this->revisionEntity->getId(),
+                                'joinTable' => $value['joinTable']['name'],
+                                'page' => 0,
+                            )
+                        );?>"
+                    >
+
+                        <?= $this->escapeHtml($value['joinTable']['name']); ?>
+                        <br>
+                        (<?= $this->escapeHtml($value['targetEntity']); ?>)
+                        <div class="entityKeys">
+                            <?php
+                            /*
+                            $rows = array();
+                            foreach($associationRevisionEntity->getEntityKeys() as $key => $value) {
+                                $rows[] = $this->escapeHtml($key) . ' => ' . $this->escapeHtml($value);
+                            }
+                            echo implode(', ', $rows);
+                            */
+                            ?>
+                        </div>
+                    </a>
+                        <?php
+                        }
+                    ?>
+
+                    </td>
+                </tr>
+            <?php
+            }
+            ?>
+
     </tbody>
 </table>
 
