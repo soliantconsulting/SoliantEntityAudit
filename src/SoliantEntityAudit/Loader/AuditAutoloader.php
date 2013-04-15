@@ -114,6 +114,7 @@ class AuditAutoloader extends StandardAutoloader
 
         foreach ($auditedClassMetadata->getAssociationNames() as $associationName) {
             $auditClass->addProperty($associationName, null, PropertyGenerator::FLAG_PROTECTED);
+            $fields[] = $associationName;
         }
 
 
@@ -127,7 +128,7 @@ class AuditAutoloader extends StandardAutoloader
         // Add exchange array method
         $setters = array();
         foreach ($fields as $fieldName) {
-            if (!$auditedClassMetadata->isIdentifier($fieldName)) $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
+            $setters[] = '$this->' . $fieldName . ' = (isset($data["' . $fieldName . '"])) ? $data["' . $fieldName . '"]: null;';
             $arrayCopy[] = "    \"$fieldName\"" . ' => $this->' . $fieldName;
         }
 
@@ -157,8 +158,12 @@ class AuditAutoloader extends StandardAutoloader
         $auditClass->setName(str_replace('\\', '_', $currentClass));
         $auditClass->setExtendedClass('AbstractAudit');
 
+
+#        if ($auditClass->getName() == 'AppleConnect_Entity_UserAuthenticationLog') {
 #            echo '<pre>';
 #            echo($auditClass->generate());
+#            die();
+#        }
 
         eval($auditClass->generate());
 

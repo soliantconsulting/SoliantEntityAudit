@@ -68,15 +68,17 @@ class AuditService extends AbstractHelper
                     ->from('SoliantEntityAudit\\Entity\\RevisionEntity', 'revisionEntity')
                     ->innerJoin('revisionEntity.revision', 'revision')
                     ->andWhere('revisionEntity.targetEntityClass = ?1')
-                    ->setParameter(1, $mapping['targetEntity'])
                     ->andWhere('revisionEntity.entityKeys = ?2')
-                    ->setParameter(2, serialize(array('id' => $value)))
                     ->andWhere('revision.timestamp <= ?3')
+                    ->setParameter(1, $mapping['targetEntity'])
+                    ->setParameter(2, serialize(array('id' => $value)))
                     ->setParameter(3, $entity->getRevisionEntity()->getRevision()->getTimestamp())
                     ->orderBy('revision.timestamp', 'DESC')
                     ->setMaxResults(1);
 
-                return $qb->getQuery()->getSingleResult();
+                $result = $qb->getQuery()->getResult();
+
+                if ($result) return reset($result);
             }
 
         }
