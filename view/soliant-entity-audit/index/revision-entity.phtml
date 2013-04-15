@@ -123,7 +123,7 @@
                 <?php
 
                     // Is this an association?
-                    if (in_array($field, $this->auditService()->getEntityAssociations($this->revisionEntity->getAuditEntity()))) {
+                    if (in_array($field, array_keys($this->auditService()->getEntityAssociations($this->revisionEntity->getAuditEntity())))) {
                         $associationRevisionEntity = $this->auditService()->getAssociationRevisionEntity($this->revisionEntity->getAuditEntity(), $field, $value);
 
                         if ($associationRevisionEntity) {
@@ -197,6 +197,7 @@
 
             <?php
                 foreach($this->auditService()->getEntityAssociations($this->revisionEntity->getAuditEntity()) as $field => $value) {
+
                     if (!isset($value['joinTable'])) continue;
             ?>
                 <tr>
@@ -220,7 +221,7 @@
                     ?>"
                     href="<?=
                         $this->url(
-                            'audit/revision-association',
+                            'audit/association',
                             array(
                                 'revisionEntityId' => $this->revisionEntity->getId(),
                                 'joinTable' => $value['joinTable']['name'],

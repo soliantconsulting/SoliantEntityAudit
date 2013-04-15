@@ -133,5 +133,27 @@ class IndexController extends AbstractActionController
             'revisionEntity_new' => $revisionEntity_new,
         );
     }
+
+    public function associationAction()
+    {
+        $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
+        $joinTable = $this->getEvent()->getRouteMatch()->getParam('joinTable');
+        $revisionEntityId = $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
+
+        $auditService = $this->getServiceLocator()->get('auditService');
+
+        $revisionEntity = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager()
+            ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId);
+
+        if (!$revisionEntity)
+            return $this->plugin('redirect')->toRoute('audit');
+
+        return array(
+            'revisionEntity' => $revisionEntity,
+            'page' => $page,
+            'joinTable' => $joinTable,
+        );
+
+    }
 }
 

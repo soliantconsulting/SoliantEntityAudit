@@ -47,6 +47,7 @@ class AuditService extends AbstractHelper
         return $return;
     }
 
+
     public function getEntityAssociations(AbstractAudit $entity)
     {
         $associations = array();
@@ -54,17 +55,18 @@ class AuditService extends AbstractHelper
             $associations[$mapping['fieldName']] = $mapping;
         }
 
-#print_r($associations);die();
-
         return $associations;
     }
 
+    /**
+     * Find a mapping to the given field for 1:many
+     */
     public function getAssociationRevisionEntity(AbstractAudit $entity, $field, $value) {
         $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         foreach ($entity->getAssociationMappings() as $mapping) {
-            if ($mapping['fieldName'] == $field) {
 
+            if ($mapping['fieldName'] == $field) {
                 $qb = $em->createQueryBuilder();
                 $qb->select('revisionEntity')
                     ->from('SoliantEntityAudit\\Entity\\RevisionEntity', 'revisionEntity')

@@ -80,8 +80,8 @@ class AuditAutoloader extends StandardAutoloader
                 MethodGenerator::FLAG_PUBLIC,
                 implode("\n", $setters)
             );
- echo '<pre>';
- print_r($auditClass->generate()); # die();
+# echo '<pre>';
+# print_r($auditClass->generate()); # die();
             eval($auditClass->generate());
             return;
         }
