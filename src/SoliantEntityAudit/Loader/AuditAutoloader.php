@@ -44,6 +44,7 @@ class AuditAutoloader extends StandardAutoloader
         //  Build a discovered many to many join class
         $joinClasses = $moduleOptions->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
+
             $auditClass->setNamespaceName("SoliantEntityAudit\\Entity");
             $auditClass->setName($className);
             $auditClass->setExtendedClass('AbstractAudit');
@@ -79,8 +80,8 @@ class AuditAutoloader extends StandardAutoloader
                 MethodGenerator::FLAG_PUBLIC,
                 implode("\n", $setters)
             );
-#echo '<pre>';
- #print_r($auditClass->generate());die();
+ echo '<pre>';
+ print_r($auditClass->generate()); # die();
             eval($auditClass->generate());
             return;
         }

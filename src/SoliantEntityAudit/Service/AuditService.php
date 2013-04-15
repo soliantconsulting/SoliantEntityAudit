@@ -51,8 +51,10 @@ class AuditService extends AbstractHelper
     {
         $associations = array();
         foreach ($entity->getAssociationMappings() as $mapping) {
-            $associations[] = $mapping['fieldName'];
+            $associations[$mapping['fieldName']] = $mapping;
         }
+
+#print_r($associations);die();
 
         return $associations;
     }
