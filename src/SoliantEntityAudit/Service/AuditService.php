@@ -29,7 +29,7 @@ class AuditService extends AbstractHelper
         return $this;
     }
 
-    public function getEntityValues(AbstractAudit $entity) {
+    public function getEntityValues($entity) {
         $em = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager();
 
         $metadata = $em->getClassMetadata(get_class($entity));

@@ -29,7 +29,7 @@ final class AuditDriver implements MappingDriver
             $builder->addField('auditEntityClass', 'string');
             $builder->addField('targetEntityClass', 'string');
             $builder->addField('revisionType', 'string');
-            $builder->addField('title', 'string');
+            $builder->addField('title', 'string', array('nullable' => true));
 
             $metadata->setTableName($moduleOptions->getRevisionEntityTableName());
             return;
