@@ -132,6 +132,7 @@ final class AuditDriver implements MappingDriver
             $auditEntities[] = $auditClassName;
             $auditedClassMetadata = $metadataFactory->getMetadataFor($name);
 
+            // FIXME:  done in autoloader
             foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
                 if (isset($mapping['joinTable']['name'])) {
                     $auditJoinTableClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);

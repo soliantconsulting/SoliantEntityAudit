@@ -41,18 +41,13 @@ final class AssociationPaginator extends AbstractHelper implements ServiceLocato
             }
         }
 
-#print_r($mapping);die();
-
-#$new = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $joinTable);
-#$x = new $new;
-
         $repository = $entityManager->getRepository('SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $joinTable));
-/*
+
         $qb = $repository->createQueryBuilder('association');
         $qb->andWhere('association.revisionEntity = ?1');
         $qb->setParameter(1, $revisionEntity->getId());
 #        $qb->orderBy('association.id', 'DESC');
-*/
+
 /*
         $i = 0;
         foreach($filter as $field => $value) {

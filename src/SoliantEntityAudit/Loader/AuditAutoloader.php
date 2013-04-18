@@ -43,6 +43,11 @@ class AuditAutoloader extends StandardAutoloader
 
         //  Build a discovered many to many join class
         $joinClasses = $moduleOptions->getJoinClasses();
+/*        if ($className == 'SoliantEntityAudit\\Entity\\VenueToVenueGroup') {
+            print_r($joinClasses);
+            die('v2vga');
+        }
+        */
         if (in_array($className, array_keys($joinClasses))) {
 
             $auditClass->setNamespaceName("SoliantEntityAudit\\Entity");
@@ -159,6 +164,16 @@ class AuditAutoloader extends StandardAutoloader
         $auditClass->setName(str_replace('\\', '_', $currentClass));
         $auditClass->setExtendedClass('AbstractAudit');
 
+        #    $auditedClassMetadata = $metadataFactory->getMetadataFor($currentClass);
+        $auditedClassMetadata = $metadataFactory->getMetadataFor($currentClass);
+
+            foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
+                if (isset($mapping['joinTable']['name'])) {
+                    $auditJoinTableClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
+                    $auditEntities[] = $auditJoinTableClassName;
+                    $moduleOptions->addJoinClass($auditJoinTableClassName, $mapping);
+                }
+            }
 
 #        if ($auditClass->getName() == 'AppleConnect_Entity_UserAuthenticationLog') {
 #            echo '<pre>';

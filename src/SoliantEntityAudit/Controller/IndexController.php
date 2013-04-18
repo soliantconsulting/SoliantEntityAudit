@@ -136,6 +136,19 @@ class IndexController extends AbstractActionController
 
     public function associationAction()
     {
+        // When an association is requested all audit metadata must
+        // be loaded in order to create the necessary join table 
+        // information
+        $moduleOptions = $this->getServiceLocator()
+            ->get('auditModuleOptions');
+
+        foreach ($moduleOptions->getAuditedClassNames() 
+            as $className => $route) {
+            $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $className);
+            $x = new $auditClassName;
+        }
+        $joinClasses = $moduleOptions->getJoinClasses();
+
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
         $joinTable = $this->getEvent()->getRouteMatch()->getParam('joinTable');
         $revisionEntityId = $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
