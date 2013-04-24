@@ -69,6 +69,8 @@ class IndexController extends AbstractActionController
      */
     public function revisionEntityAction()
     {
+        $this->mapAllAuditedClasses();
+
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
         $revisionEntityId = (int) $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
 
@@ -134,8 +136,18 @@ class IndexController extends AbstractActionController
         );
     }
 
-    public function associationAction()
+    public function associationSourceAction()
     {
+        // When an association is requested all audit metadata must
+        // be loaded in order to create the necessary join table
+        // information
+        $moduleOptions = $this->getServiceLocator()
+            ->get('auditModuleOptions');
+
+        $this->mapAllAuditedClasses();
+
+        $joinClasses = $moduleOptions->getJoinClasses();
+
         $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
         $joinTable = $this->getEvent()->getRouteMatch()->getParam('joinTable');
         $revisionEntityId = $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
@@ -155,5 +167,58 @@ class IndexController extends AbstractActionController
         );
 
     }
+
+    public function associationTargetAction()
+    {
+        // When an association is requested all audit metadata must
+        // be loaded in order to create the necessary join table
+        // information
+        $moduleOptions = $this->getServiceLocator()
+            ->get('auditModuleOptions');
+
+        $this->mapAllAuditedClasses();
+
+        foreach ($moduleOptions->getAuditedClassNames()
+            as $className => $route) {
+            $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $className);
+            $x = new $auditClassName;
+        }
+        $joinClasses = $moduleOptions->getJoinClasses();
+
+        $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
+        $joinTable = $this->getEvent()->getRouteMatch()->getParam('joinTable');
+        $revisionEntityId = $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
+
+        $auditService = $this->getServiceLocator()->get('auditService');
+
+        $revisionEntity = \SoliantEntityAudit\Module::getModuleOptions()->getEntityManager()
+            ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId);
+
+        if (!$revisionEntity)
+            return $this->plugin('redirect')->toRoute('audit');
+
+        return array(
+            'revisionEntity' => $revisionEntity,
+            'page' => $page,
+            'joinTable' => $joinTable,
+        );
+
+    }
+
+    private function mapAllAuditedClasses() {
+
+        // When an association is requested all audit metadata must
+        // be loaded in order to create the necessary join table
+        // information
+        $moduleOptions = $this->getServiceLocator()
+            ->get('auditModuleOptions');
+
+        foreach ($moduleOptions->getAuditedClassNames()
+            as $className => $route) {
+            $auditClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $className);
+            $x = new $auditClassName;
+        }
+    }
+
 }
 

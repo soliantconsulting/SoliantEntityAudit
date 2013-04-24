@@ -4,9 +4,9 @@
     <a href="#" class="btn btn-danger">Delete</a>
 </span>
 
-<h1>Audit Entity Association</h1>
+<h1>Audit Entity Target Association</h1>
 
-<?php $paginator = $this->auditAssociationPaginator($this->page, $this->revisionEntity, $this->joinTable); ?>
+<?php $paginator = $this->auditAssociationTargetPaginator($this->page, $this->revisionEntity, $this->joinTable); ?>
 
 <table class="table table-striped table-hover table-bordered">
     <thead>
@@ -14,7 +14,7 @@
             <th colspan="4">
             <?php echo $this->paginationControl($paginator,
                 'Sliding',
-                'soliant-entity-audit/pagination/association', array('route' => 'audit/association'));
+                'soliant-entity-audit/pagination/association-target', array('route' => 'audit/association-target'));
             ?>
             </th>
         </tr>
@@ -31,7 +31,7 @@
         <th colspan="4">
             <?php echo $this->paginationControl($paginator,
                 'Sliding',
-                'soliant-entity-audit/pagination/association', array('route' => 'audit/page'));
+                'soliant-entity-audit/pagination/association-target', array('route' => 'audit/page'));
             ?>
         </th>
     </tfoot>
