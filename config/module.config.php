@@ -41,11 +41,13 @@ return array(
         'invokables' => array(
             'auditRevisionPaginator' => 'SoliantEntityAudit\View\Helper\RevisionPaginator',
             'auditRevisionEntityPaginator' => 'SoliantEntityAudit\View\Helper\RevisionEntityPaginator',
-            'auditAssociationPaginator' => 'SoliantEntityAudit\View\Helper\AssociationPaginator',
             'auditCurrentRevisionEntity' => 'SoliantEntityAudit\View\Helper\CurrentRevisionEntity',
             'auditEntityOptions' => 'SoliantEntityAudit\View\Helper\EntityOptions',
 
             'auditRevisionEntityLink' => 'SoliantEntityAudit\View\Helper\RevisionEntityLink',
+
+            'auditAssociationSourcePaginator' => 'SoliantEntityAudit\View\Helper\AssociationSourcePaginator',
+            'auditAssociationTargetPaginator' => 'SoliantEntityAudit\View\Helper\AssociationTargetPaginator',
         ),
     ),
 
@@ -119,17 +121,31 @@ return array(
                             ),
                         ),
                     ),
-                    'association' => array(
+                    'association-target' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/association[/:revisionEntityId][/:joinTable][/:page]',
+                            'route' => '/association-target[/:revisionEntityId][/:joinTable][/:page]',
                             'constraints' => array(
                                 'revisionEntityId' => '[0-9]*',
                                 'page' => '[0-9]*',
                             ),
                             'defaults' => array(
                                 'controller' => 'audit',
-                                'action'     => 'association',
+                                'action'     => 'association-target',
+                            ),
+                        ),
+                    ),
+                    'association-source' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/association-source[/:revisionEntityId][/:joinTable][/:page]',
+                            'constraints' => array(
+                                'revisionEntityId' => '[0-9]*',
+                                'page' => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'audit',
+                                'action'     => 'association-source',
                             ),
                         ),
                     ),

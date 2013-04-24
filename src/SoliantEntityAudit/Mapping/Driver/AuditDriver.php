@@ -58,17 +58,13 @@ final class AuditDriver implements MappingDriver
         //  Build a discovered many to many join class
         $joinClasses = $moduleOptions->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
-            $builder->addManyToOne($moduleOptions->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\RevisionEntity');
-            $identifiers = array($moduleOptions->getRevisionEntityFieldName());
 
-            $builder->addField($joinClasses[$className]['inversedBy'], 'integer', array('nullable' => true, 'columnName' => $joinClasses[$className]['joinTableColumns'][0]));
-            $builder->addField($joinClasses[$className]['fieldName'], 'integer', array('nullable' => true, 'columnName' => $joinClasses[$className]['joinTableColumns'][1]));
+            $builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
 
-            $identifiers[] = $joinClasses[$className]['fieldName'];
-            $identifiers[] = $joinClasses[$className]['inversedBy'];
+            $builder->addManyToOne('targetRevisionEntity', 'SoliantEntityAudit\\Entity\\RevisionEntity');
+            $builder->addManyToOne('sourceRevisionEntity', 'SoliantEntityAudit\\Entity\\RevisionEntity');
 
             $metadata->setTableName($moduleOptions->getTableNamePrefix() . $joinClasses[$className]['joinTable']['name'] . $moduleOptions->getTableNameSuffix());
-            $metadata->setIdentifier($identifiers);
             return;
         }
 

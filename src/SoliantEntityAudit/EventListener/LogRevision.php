@@ -281,11 +281,18 @@ class LogRevision implements EventSubscriber
 
                 foreach ($value->getSnapshot() as $element) {
                     $audit = new $joinClassName();
-                    $values[$mapping['inversedBy']] = $value->getOwner()->getId();
-                    $values[$mapping['fieldName']] = $element->getId();
-                    #print_r($values);
-                    $audit->setRevisionEntity($revisionEntity);
-                    $audit->exchangeArray($values);
+
+                    // Get current inverse revision entity
+                    $revisionEntities = $entityManager->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->findBy(array(
+                        'targetEntityClass' => get_class($element),
+                        'entityKeys' => serialize(array('id' => $element->getId())),
+                    ), array('id' => 'DESC'), 1);
+
+                    $inverseRevisionEntity = $revisionEntities[0];
+
+                    $audit->setTargetRevisionEntity($revisionEntity);
+                    $audit->setSourceRevisionEntity($inverseRevisionEntity);
+
                     $entityManager->persist($audit);
                 }
             }
