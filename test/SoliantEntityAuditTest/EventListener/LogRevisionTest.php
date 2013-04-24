@@ -144,10 +144,10 @@ class LogRevisionTest extends \PHPUnit_Framework_TestCase
         $manyToMany = reset($manyToManys);
 
         $this->assertInstanceOf('SoliantEntityAudit\Entity\performer_album', $manyToMany);
-        $manyToManyValues = $manyToMany->getArrayCopy();
+#        $manyToManyValues = $manyToMany->getArrayCopy();
 
-        $this->assertEquals($album->getId(), $manyToManyValues['albums']);
-        $this->assertEquals($performer->getId(), $manyToManyValues['performers']);
+        $this->assertEquals($album->getId(), $manyToMany->getSourceRevisionEntity()->getTargetEntity()->getId());
+        $this->assertEquals($performer->getId(), $manyToMany->getTargetRevisionEntity()->getTargetEntity()->getId());
     }
 
     public function testAuditDeleteEntity()
