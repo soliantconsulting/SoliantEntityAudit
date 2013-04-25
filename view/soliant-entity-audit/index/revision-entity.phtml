@@ -121,7 +121,51 @@
                             break;
 
                         case ClassMetadataInfo::ONE_TO_MANY: # 4
-                        echo 'one to many';
+
+                            ?>
+
+                            <a class="btn btn-<?php
+                                switch ($this->revisionEntity->getRevisionType()) {
+                                    case 'INS':
+                                        echo 'success';
+                                        break;
+                                    case 'UPD':
+                                        echo 'warning';
+                                        break;
+                                    case 'DEL':
+                                        echo 'danger';
+                                        break;
+                                    default:
+                                        echo 'info';
+                                }
+                            ?>"
+
+                            <?php
+
+                                $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+                                $joinClasses = $moduleOptions->getJoinClasses();
+                                foreach ($joinClasses as $join) {
+                                    if ($join['sourceEntity'] == $value['targetEntity'])
+                                        continue;
+                                }
+
+                            ?>
+                                href="<?=
+                                    $this->url(
+                                        'audit/one-to-many',
+                                        array(
+                                            'revisionEntityId' => $this->revisionEntity->getId(),
+                                            'joinTable' => $value['targetEntity'],
+                                            'mappedBy' => $value['mappedBy'],
+                                            'page' => 0,
+                                        )
+                                    );?>"
+                                >
+
+                                <?= $this->escapeHtml($value['targetEntity']); ?>
+                            </a>
+                            <?php
+
                             break;
 
                         case ClassMetadataInfo::MANY_TO_MANY: #8

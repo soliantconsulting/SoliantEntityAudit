@@ -55,6 +55,10 @@ final class AuditDriver implements MappingDriver
             return;
         }
 
+#        $builder->createField('audit_id', 'integer')->isPrimaryKey()->generatedValue()->build();
+        $identifiers = array();
+#        $metadata->setIdentifier(array('audit_id'));
+
         //  Build a discovered many to many join class
         $joinClasses = $moduleOptions->getJoinClasses();
         if (in_array($className, array_keys($joinClasses))) {
@@ -65,6 +69,7 @@ final class AuditDriver implements MappingDriver
             $builder->addManyToOne('sourceRevisionEntity', 'SoliantEntityAudit\\Entity\\RevisionEntity');
 
             $metadata->setTableName($moduleOptions->getTableNamePrefix() . $joinClasses[$className]['joinTable']['name'] . $moduleOptions->getTableNameSuffix());
+//            $metadata->setIdentifier($identifiers);
             return;
         }
 
@@ -76,7 +81,8 @@ final class AuditDriver implements MappingDriver
         $auditedClassMetadata = $metadataFactory->getMetadataFor($metadataClass->getAuditedEntityClass());
 
         $builder->addManyToOne($moduleOptions->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\RevisionEntity');
-        $identifiers = array($moduleOptions->getRevisionEntityFieldName());
+# Compound keys removed in favor of auditId (audit_id)
+        $identifiers[] = $moduleOptions->getRevisionEntityFieldName();
 
         // Add fields from target to audit entity
         foreach ($auditedClassMetadata->getFieldNames() as $fieldName) {

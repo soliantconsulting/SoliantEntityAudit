@@ -136,6 +136,33 @@ class IndexController extends AbstractActionController
         );
     }
 
+    public function oneToManyAction()
+    {
+        $moduleOptions = $this->getServiceLocator()
+            ->get('auditModuleOptions');
+
+        $page = (int)$this->getEvent()->getRouteMatch()->getParam('page');
+        $joinTable = $this->getEvent()->getRouteMatch()->getParam('joinTable');
+        $revisionEntityId = $this->getEvent()->getRouteMatch()->getParam('revisionEntityId');
+        $mappedBy = $this->getEvent()->getRouteMatch()->getParam('mappedBy');
+
+        $auditService = $this->getServiceLocator()->get('auditService');
+
+        $revisionEntity = $moduleOptions->getEntityManager()
+            ->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')->find($revisionEntityId);
+
+        if (!$revisionEntity)
+            return $this->plugin('redirect')->toRoute('audit');
+
+        return array(
+            'revisionEntity' => $revisionEntity,
+            'page' => $page,
+            'joinTable' => $joinTable,
+            'mappedBy' => $mappedBy,
+        );
+
+    }
+
     public function associationSourceAction()
     {
         // When an association is requested all audit metadata must
