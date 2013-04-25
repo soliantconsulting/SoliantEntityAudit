@@ -177,4 +177,12 @@ Returns the routing information for an entity by class name
 $view->auditEntityOptions($entityClassName);
 ```
 
+Titling
+-------
+
+If an entity has an auditTitle method that will be used to title an audit entity.  This is a string field
+with a limit of 256 characters.
+
+
+
 Inspired by SimpleThings

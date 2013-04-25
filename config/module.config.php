@@ -39,15 +39,16 @@ return array(
 
     'view_helpers' => array(
         'invokables' => array(
-            'auditRevisionPaginator' => 'SoliantEntityAudit\View\Helper\RevisionPaginator',
-            'auditRevisionEntityPaginator' => 'SoliantEntityAudit\View\Helper\RevisionEntityPaginator',
             'auditCurrentRevisionEntity' => 'SoliantEntityAudit\View\Helper\CurrentRevisionEntity',
             'auditEntityOptions' => 'SoliantEntityAudit\View\Helper\EntityOptions',
 
             'auditRevisionEntityLink' => 'SoliantEntityAudit\View\Helper\RevisionEntityLink',
 
+            'auditRevisionPaginator' => 'SoliantEntityAudit\View\Helper\RevisionPaginator',
+            'auditRevisionEntityPaginator' => 'SoliantEntityAudit\View\Helper\RevisionEntityPaginator',
             'auditAssociationSourcePaginator' => 'SoliantEntityAudit\View\Helper\AssociationSourcePaginator',
             'auditAssociationTargetPaginator' => 'SoliantEntityAudit\View\Helper\AssociationTargetPaginator',
+            'auditOneToManyPaginator' => 'SoliantEntityAudit\View\Helper\OneToManyPaginator',
         ),
     ),
 
@@ -118,6 +119,20 @@ return array(
                             'defaults' => array(
                                 'controller' => 'audit',
                                 'action'     => 'revisionEntity',
+                            ),
+                        ),
+                    ),
+                    'one-to-many' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/one-to-many[/:revisionEntityId][/:joinTable][/:mappedBy][/:page]',
+                            'constraints' => array(
+                                'revisionEntityId' => '[0-9]*',
+                                'page' => '[0-9]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'audit',
+                                'action'     => 'one-to-many',
                             ),
                         ),
                     ),

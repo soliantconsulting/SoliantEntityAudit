@@ -1,0 +1,153 @@
+<?php
+    use Doctrine\ORM\Mapping\ClassMetadataInfo;
+?>
+
+<h1>Audit One To Many</h1>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Revision</th>
+            <th>Entity</th>
+            <th>Comment</th>
+            <th>User</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>
+                <a href="<?=
+                    $this->url('audit/revisions',
+                        array(
+                            'revisionId' => $this->revisionEntity->getRevision()->getId()
+                        )
+                    );
+                ?>">
+
+                    <?= $this->revisionEntity->getRevision()->getId(); ?>
+
+                    @ <?php echo $this->AuditDateTimeFormatter($revisionEntity->getRevision()->getTimestamp()); ?>
+                </a>
+
+            </td>
+
+            <td>
+                <?= $this->auditRevisionEntityLink($revisionEntity); ?>
+            </td>
+
+            <td><?= $this->escapeHtml($this->revisionEntity->getRevision()->getComment()); ?></td>
+
+            <td>
+                <a href="<?php
+                    if ($this->revisionEntity->getRevision()->getUser()) {
+                        echo $this->url('audit/user', array('userId' => $this->revisionEntity->getRevision()->getUser()->getId()));
+                    } else {
+                        echo $this->url('audit/user', array('userId' => '0'));
+                    }
+                ?>" class="btn btn-default">
+                    <?php
+                        if ($this->revisionEntity->getRevision()->getUser()) {
+                            echo $this->gravatar($this->revisionEntity->getRevision()->getUser()->getEmail(), array('img_size' => 24));
+                            echo ' ';
+                            echo $this->escapeHtml($this->revisionEntity->getRevision()->getUser()->getDisplayName());
+                        } else {
+                            echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
+                            echo ' Anonymous';
+                        }
+                    ?>
+                </a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<?php
+
+    $paginator = $this->auditOneToManyPaginator(
+        $this->page,
+        $this->revisionEntity,
+        $this->joinTable,
+        $this->mappedBy
+    );
+?>
+
+<table class="table table-striped table-hover table-bordered">
+    <thead>
+        <tr>
+            <th colspan="4">
+            <?php echo $this->paginationControl($paginator,
+                'Sliding',
+                'soliant-entity-audit/pagination/one-to-many', array('route' => 'audit/one-to-many'));
+            ?>
+            </th>
+        </tr>
+        <tr>
+            <th>Revision</th>
+            <th>Entity</th>
+            <th>Comment</th>
+            <th>User</th>
+        </tr>
+    </thead>
+
+    <tfoot>
+        <th colspan="4">
+            <?php echo $this->paginationControl($paginator,
+                'Sliding',
+                'soliant-entity-audit/pagination/one-to-many', array('route' => 'audit/one-to-many'));
+            ?>
+        </th>
+    </tfoot>
+    <tbody>
+    <?php
+    foreach ($paginator as $association) {
+    ?>
+        <tr>
+            <td>
+                <a href="<?=
+                    $this->url('audit/revisions',
+                        array(
+                            'revisionId' => $association->getRevision()->getId()
+                        )
+                    );
+                ?>">
+
+                    <?= $association->getRevision()->getId(); ?>
+
+                    @ <?php echo $this->AuditDateTimeFormatter($association->getRevision()->getTimestamp()); ?>
+                </a>
+
+            </td>
+
+            <td>
+                <?= $this->auditRevisionEntityLink($association); ?>
+            </td>
+
+            <td><?= $this->escapeHtml($association->getRevision()->getComment()); ?></td>
+
+            <td>
+                <a href="<?php
+                    if ($association->getRevision()->getUser()) {
+                        echo $this->url('audit/user', array('userId' => $association->getRevision()->getUser()->getId()));
+                    } else {
+                        echo $this->url('audit/user', array('userId' => '0'));
+                    }
+                ?>" class="btn btn-default">
+                    <?php
+                        if ($association->getRevision()->getUser()) {
+                            echo $this->gravatar($association->getRevision()->getUser()->getEmail(), array('img_size' => 24));
+                            echo ' ';
+                            echo $this->escapeHtml($association->getRevision()->getUser()->getDisplayName());
+                        } else {
+                            echo $this->gravatar('anonymous@unknown.net', array('img_size' => 24));
+                            echo ' Anonymous';
+                        }
+                    ?>
+                </a>
+            </td>
+        </tr>
+        <?php
+        }
+        ?>
+    </tbody>
+</table>
