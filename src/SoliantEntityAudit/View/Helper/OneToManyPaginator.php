@@ -39,7 +39,7 @@ final class OneToManyPaginator extends AbstractHelper implements ServiceLocatorA
         $repository = $entityManager->getRepository('SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $joinTable));
 
         $qb = $repository->createQueryBuilder('onetomany');
-        $qb->select('onetomany.revisionEntity, onetomany.id');
+        $qb->select('onetomany.revisionEntity');
 #        $qb->select('onetomany.id');
 #        $qb->innerJoin('onetomany.revisionEntity', 'revisionEntity');
 #        $qb->andWhere('onetomany.' . $mappedBy . ' = :var');
