@@ -33,21 +33,23 @@ final class OneToManyPaginator extends AbstractHelper implements ServiceLocatorA
         $entityManager = $auditModuleOptions->getEntityManager();
         $auditService = $this->getServiceLocator()->getServiceLocator()->get('auditService');
 
-#select revisionEntity join $joinTable onetomany
-#where onetomany.$mappedBy = $revisionEntity->getTargetEntity()->getId();
+        $entityClassName = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $joinTable);
 
-        $repository = $entityManager->getRepository('SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $joinTable));
+        $query = $entityManager->createQuery("
+            SELECT e
+            FROM SoliantEntityAudit\Entity\RevisionEntity e
+            JOIN e.revision r
+            WHERE e.id IN (
+                SELECT re.id
+                FROM $entityClassName s
+                JOIN s.revisionEntity re
+                WHERE s.$mappedBy = :var
+            )
+            ORDER BY r.timestamp DESC
+        ");
+        $query->setParameter('var', $revisionEntity->getTargetEntity());
 
-        $qb = $repository->createQueryBuilder('onetomany');
-        $qb->select('onetomany.revisionEntity');
-#        $qb->select('onetomany.id');
-#        $qb->innerJoin('onetomany.revisionEntity', 'revisionEntity');
-#        $qb->andWhere('onetomany.' . $mappedBy . ' = :var');
-#        $qb->setParameter('var', $revisionEntity->getTargetEntity()->getId());
-
-print_r($qb->getQuery()->getDql());die();
-
-        $adapter = new DoctrineAdapter(new ORMPaginator($qb));
+        $adapter = new DoctrineAdapter(new ORMPaginator($query));
         $paginator = new Paginator($adapter);
         $paginator->setDefaultItemCountPerPage($auditModuleOptions->getPaginatorLimit());
 

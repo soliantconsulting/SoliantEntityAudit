@@ -105,10 +105,6 @@
             <?php
                 foreach($this->auditService()->getEntityAssociations($this->revisionEntity->getAuditEntity()) as $field => $value) {
             ?>
-                <tr>
-                    <td><?php  echo $this->escapeHtml($field); ?></td>
-                    <td>
-
                     <?php
 
                     switch ($value['type']) {
@@ -117,12 +113,20 @@
                             break;
 
                         case ClassMetadataInfo::MANY_TO_ONE: # 2
-                        echo 'many to one';
+                            // Handled in field listing
                             break;
 
                         case ClassMetadataInfo::ONE_TO_MANY: # 4
+                            // Verify an audit class exists for this field
+                            if (!class_exists('SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $value['targetEntity'])))
+                                continue;
+
 
                             ?>
+                            <tr>
+                                <td><?php  echo $this->escapeHtml($field); ?></td>
+                                <td>
+
 
                             <a class="btn btn-<?php
                                 switch ($this->revisionEntity->getRevisionType()) {
@@ -164,12 +168,20 @@
 
                                 <?= $this->escapeHtml($value['targetEntity']); ?>
                             </a>
+                        </td>
+                    </tr>
+
                             <?php
 
                             break;
 
                         case ClassMetadataInfo::MANY_TO_MANY: #8
                             ?>
+
+                            <tr>
+                                <td><?php  echo $this->escapeHtml($field); ?></td>
+                                <td>
+
                             <a class="btn btn-<?php
                                 switch ($this->revisionEntity->getRevisionType()) {
                                     case 'INS':
@@ -236,6 +248,8 @@
                             }
                             ?>
                             </a>
+                        </td>
+                    </tr>
                                 <?php
                             break;
 
@@ -244,8 +258,6 @@
                     }
 
                 ?>
-                    </td>
-                </tr>
             <?php
             }
         }
