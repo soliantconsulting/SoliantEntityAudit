@@ -180,8 +180,7 @@ $view->auditEntityOptions($entityClassName);
 Titling
 -------
 
-If an entity has an auditTitle method that will be used to title an audit entity.  This is a string field
-with a limit of 256 characters.
+If an entity has a getAuditTitle method that will be used to title an audit entity.  This is a string field with a limit of 256 characters.
 
 
 

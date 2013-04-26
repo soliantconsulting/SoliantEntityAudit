@@ -26,7 +26,7 @@ class RevisionEntity
     // The type of action, INS, UPD, DEL
     private $revisionType;
 
-    // Fetched from entity::auditTitle() if exists
+    // Fetched from entity::getAuditTitle() if exists
     private $title;
 
     public function getId()
@@ -129,7 +129,7 @@ class RevisionEntity
 
     public function setTitle($value)
     {
-        $this->title = substr($value, 0, 255);
+        $this->title = substr($value, 0, 256);
 
         return $this;
     }
