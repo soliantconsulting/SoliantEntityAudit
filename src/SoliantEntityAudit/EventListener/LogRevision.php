@@ -172,7 +172,7 @@ class LogRevision implements EventSubscriber
         $revisionEntity->setRevision($this->getRevision());
         $this->getRevision()->getRevisionEntities()->add($revisionEntity);
         $revisionEntity->setRevisionType($revisionType);
-        if (method_exists($entity, '__toString')
+        if (method_exists($entity, '__toString'))
             $revisionEntity->setTitle((string)$entity);
         $this->addRevisionEntity($revisionEntity);
 

@@ -21,7 +21,7 @@ class AuditAutoloader extends StandardAutoloader
     public function loadClass($className, $type)
     {
         $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
-        if (!$moduleOptions) die("could not load class $className");
+        if (!$moduleOptions) return;
         $entityManager = $moduleOptions->getEntityManager();
 
         $auditClass = new ClassGenerator();
