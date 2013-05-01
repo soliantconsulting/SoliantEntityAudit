@@ -9,13 +9,11 @@ An auditing module for Doctrine 2.  Requires ZfcUser to map revisions to users. 
 About
 =====
 
-This module takes a configuration of entities you'd like to audit and creates 
-entities to audit them.  Included is a view layer to browse the audit records.
-Routing back to live application data is supported and view helpers
+This module takes a configuration of entities to audit and creates 
+entities to audit them and revision tracking entities.  Included is a view layer to browse the audit records.  Routing back to live application data is supported and view helpers
 allow you to find and browse to the latest audit record from a given audited entity.
 
-Revisions pool all audited entities into revision buckets.  Each bucket contains the revision entity for each 
-audited record in a transaction.
+Revisions pool all audited entities into revision buckets.  Each bucket contains the revision entity for each audited record in a transaction.
 
 Auditing is done in it's own transaction after a flush has been performed.  Auditing takes two flushes in one transaction to complete.  
 
@@ -23,7 +21,7 @@ Auditing is done in it's own transaction after a flush has been performed.  Audi
 Install
 =======
 
-Download SoliantEntityAudit with composer 
+Require SoliantEntityAudit with composer 
 
 ```php
 php composer.phar require "soliantconsulting/entity-audit": "dev-master"
@@ -72,7 +70,7 @@ Terminology
 
 AuditEntity - A generated entity which maps to the Target auditable entity.  This stores the values for the Target entity at the time a Revision is created.
 
-Revision - An entity which stores the timestap and comment about a single entity manager flush which contains auditable entities.
+Revision - An entity which stores the timestap, comment, an user for a single entity manager flush which contains auditable entities.
 
 RevisionEntity - A mapping entity which maps an AuditEntity to a Revision and maps to a Target audited entity.  This entity can rehydrate a Target entity and AuditEntity.  This also stores the revision type when the Target was audited.  INS, UPD, and DEL map to insert, update, and delete.  The primary keys of the Target are stored as an array and can be used to rehydrate a Target.
 
@@ -80,11 +78,13 @@ Target entity - An auditable entity specified as string in the audit configurati
 
 
 Authentication 
-=======
+--------------
 
-You may configure a custom entity to serve as the user entity for mapping revisions to users.  You may configure a custom authentication service too.  By default these map to ZfcUserDoctrineORM\Entity\User and zfcuser_auth_service.  For example to use a custom entity and service Db\Entity\User for an entity and Zend\Authentication\AuthenticationService would work well.
+You may configure a custom entity to serve as the user entity for mapping revisions to users.  You may configure a custom authentication service too.  By default these map to ZfcUserDoctrineORM\Entity\User and zfcuser_auth_service.  For example to use a custom entity and service Db\Entity\User for an entity and Zend\Authentication\AuthenticationService would work.
 
 The user entity must implement getDisplayName, getId, and getEmail.  The authentication service must implement hasIdentity and getIdentity which returns an instance of the current user entity.
+
+Interfaces are not used so ZfcUser can be used out of the box.
 
 
 Routing
@@ -180,7 +180,7 @@ $view->auditEntityOptions($entityClassName);
 Titling
 -------
 
-If an entity has a __toString method that will be used to title an audit entity limited to 256 characters.
+If an entity has a __toString method it will be used to title an audit entity limited to 256 characters and stored in the RevisionEntity.
 
 
 
