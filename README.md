@@ -183,5 +183,4 @@ Titling
 If an entity has a __toString method it will be used to title an audit entity limited to 256 characters and stored in the RevisionEntity.
 
 
-
 Inspired by SimpleThings
