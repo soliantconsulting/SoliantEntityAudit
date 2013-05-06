@@ -15,8 +15,8 @@
 
 return array(
     'audit' => array(
-        'datetime.format' => 'r',
-        'paginator.limit' => 20,
+        'datetimeFormat' => 'r',
+        'paginatorLimit' => 20,
 
         /**
          * The userEntityClassName is a string for the doctrine entity class

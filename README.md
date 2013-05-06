@@ -42,8 +42,8 @@ Copy `config/SoliantEntityAudit.global.php.dist` to `config/autoload/SoliantEnti
 ```php
 return array(
     'audit' => array(
-        'datetime.format' => 'r',
-        'paginator.limit' => 20,
+        'datetimeFormat' => 'r',
+        'paginatorLimit' => 20,
         
         'tableNamePrefix' => '',
         'tableNameSuffix' => '_audit',

@@ -4,8 +4,8 @@ namespace SoliantEntityAuditTest;
 
 return array(
     'audit' => array(
-        'datetime.format' => 'r',
-        'paginator.limit' => 999999,
+        'datetimeFormat' => 'r',
+        'paginatorLimit' => 999999,
 
         'userEntityClassName' => 'ZfcUserDoctrineORM\Entity\User',
         'authenticationService' => 'zfcuser_auth_service',

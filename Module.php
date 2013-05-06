@@ -87,7 +87,7 @@ class Module
                 'auditDateTimeFormatter' => function($sm) {
                     $Servicelocator = $sm->getServiceLocator();
                     $config = $Servicelocator->get("Config");
-                    $format = $config['audit']['datetime.format'];
+                    $format = $config['audit']['datetimeFormat'];
                     $formatter = new DateTimeFormatter();
                     return $formatter->setDateTimeFormat($format);
                 },
