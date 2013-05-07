@@ -1,4 +1,29 @@
-<a class="btn btn-<?php
+<div style="text-align: left;" class="btn btn-<?php
+    switch ($this->revisionEntity->getRevisionType()) {
+        case 'INS':
+            echo 'success';
+            break;
+        case 'UPD':
+            echo 'warning';
+            break;
+        case 'DEL':
+            echo 'danger';
+            break;
+        default:
+            echo 'info';
+    }
+?>">
+    <?php
+    if ($options = $this->auditEntityOptions($this->revisionEntity->getTargetEntityClass())) {
+        $routeOptions = array_merge($options['defaults'], $this->revisionEntity->getEntityKeys());
+    ?>
+        <a class="btn btn-info"  href="<?=
+            $this->url($options['route'], $routeOptions);
+        ?>"><i class="icon-list"></i></a>
+    <?php
+    }
+    ?>
+    <a class="btn btn-<?php
     switch ($this->revisionEntity->getRevisionType()) {
         case 'INS':
             echo 'success';
@@ -22,19 +47,20 @@
         );?>"
     >
 
+    <?= $this->escapeHtml(substr($this->revisionEntity->getAuditEntity()->getAuditedEntityClass(), strrpos($this->revisionEntity->getAuditEntity()->getAuditedEntityClass(), '\\') + 1)); ?>:
+
     <?php
     if ($this->revisionEntity->getTitle()) {
     ?>
-        <strong><?= $this->escapeHtml($this->revisionEntity->getTitle()); ?></strong>
+        <?= $this->escapeHtml($this->revisionEntity->getTitle()); ?>
         <br>
     <?php
     }
     ?>
 
-    (<?= $this->revisionEntity->getId(); ?>)
+<!--   (<?= $this->revisionEntity->getId(); ?>) -->
 
 
-    <?= $this->escapeHtml($this->revisionEntity->getAuditEntity()->getAuditedEntityClass()); ?>
     <div class="entityKeys">
         <?php
         $rows = array();
@@ -45,14 +71,5 @@
         ?>
     </div>
 </a>
+</div>
 
-    <?php
-    if ($options = $this->auditEntityOptions($this->revisionEntity->getTargetEntityClass())) {
-        $routeOptions = array_merge($options['defaults'], $this->revisionEntity->getEntityKeys());
-    ?>
-        <a class="btn btn-info" href="<?=
-            $this->url($options['route'], $routeOptions);
-        ?>">Data</a>
-    <?php
-    }
-    ?>
