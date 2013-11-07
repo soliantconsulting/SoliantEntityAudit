@@ -21,7 +21,7 @@ class ModuleOptions
 
     public function setDefaults(array $config)
     {
-        $this->setPaginatorLimit(isset($config['tableNamePrefix']) ? $config['paginatorLimit']: 20);
+        $this->setPaginatorLimit(isset($config['paginatorLimit']) ? $config['paginatorLimit']: 20);
         $this->setTableNamePrefix(isset($config['tableNamePrefix']) ? $config['tableNamePrefix']: null);
         $this->setTableNameSuffix(isset($config['tableNameSuffix']) ? $config['tableNameSuffix']: '_audit');
         $this->setAuditedClassNames(isset($config['entities']) ? $config['entities']: array());
