@@ -80,7 +80,7 @@ class LogRevision implements EventSubscriber
     public function addCollection($collection)
     {
         if (!$this->collections) $this->collections = array();
-        if (in_array($collection, $this->collections)) return;
+        if (in_array($collection, $this->collections, true)) return;
         $this->collections[] = $collection;
     }
 
