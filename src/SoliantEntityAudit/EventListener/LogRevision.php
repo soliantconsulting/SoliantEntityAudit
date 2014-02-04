@@ -292,6 +292,11 @@ class LogRevision implements EventSubscriber
 
                     $inverseRevisionEntity = reset($revisionEntities);
 
+                    if (!$inverseRevisionEntity) {
+                        // No inverse revision entity found
+                        continue;
+                    }
+
                     $audit->setTargetRevisionEntity($revisionEntity);
                     $audit->setSourceRevisionEntity($inverseRevisionEntity);
 
