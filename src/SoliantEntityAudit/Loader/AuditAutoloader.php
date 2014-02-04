@@ -7,6 +7,7 @@ use Zend\Loader\StandardAutoloader
     , Zend\Code\Reflection\ClassReflection
     , Zend\Code\Generator\ClassGenerator
     , Zend\Code\Generator\MethodGenerator
+    , Zend\Code\Generator\ParameterGenerator
     , Zend\Code\Generator\PropertyGenerator
     ;
 
@@ -59,14 +60,14 @@ class AuditAutoloader extends StandardAutoloader
             );
 
             $auditClass->addMethod(
-                'setTargetRevisionEntity', array('value'),
+                'setTargetRevisionEntity', array(ParameterGenerator::fromArray(array('name' => 'value', 'type' => '\SoliantEntityAudit\Entity\RevisionEntity'))),
                 MethodGenerator::FLAG_PUBLIC,
                 '$this->targetRevisionEntity = $value;' . "\n" .
                     'return $this;'
             );
 
             $auditClass->addMethod(
-                'setSourceRevisionEntity', array('value'),
+                'setSourceRevisionEntity', array(ParameterGenerator::fromArray(array('name' => 'value', 'type' => '\SoliantEntityAudit\Entity\RevisionEntity'))),
                 MethodGenerator::FLAG_PUBLIC,
                 '$this->sourceRevisionEntity = $value;' . "\n" .
                     'return $this;'
