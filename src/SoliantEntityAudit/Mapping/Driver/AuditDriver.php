@@ -86,7 +86,7 @@ final class AuditDriver implements MappingDriver
 
         // Add fields from target to audit entity
         foreach ($auditedClassMetadata->getFieldNames() as $fieldName) {
-            $builder->addField($fieldName, $auditedClassMetadata->getTypeOfField($fieldName), array('nullable' => true));
+            $builder->addField($fieldName, $auditedClassMetadata->getTypeOfField($fieldName), array('nullable' => true, 'quoted' => true));
             if ($auditedClassMetadata->isIdentifier($fieldName)) $identifiers[] = $fieldName;
         }
 
