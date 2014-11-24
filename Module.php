@@ -67,7 +67,11 @@ class Module
 
                     $auth = $serviceManager->get($auditConfig->getAuthenticationService());
                     if ($auth->hasIdentity()) {
-                        $auditConfig->setUser($auth->getIdentity());
+                        if ($auditConfig->getEntityManager()->contains($auth->getIdentity())) {
+                            $auditConfig->setUser($auth->getIdentity());
+                        } else {
+                            $auditConfig->setUser($auditConfig->getEntityManager()->merge($auth->getIdentity()));
+                        }
                     }
 
                     return $auditConfig;
