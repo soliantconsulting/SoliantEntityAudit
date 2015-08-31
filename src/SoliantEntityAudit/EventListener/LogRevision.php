@@ -161,10 +161,12 @@ class LogRevision implements EventSubscriber
         $auditEntities = array();
 
         $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
-        if (!in_array(get_class($entity), array_keys($moduleOptions->getAuditedClassNames())))
+        $entityClass = $this->getEntityClass($entity);
+
+        if (!in_array($entityClass, array_keys($moduleOptions->getAuditedClassNames())))
             return array();
 
-        $auditEntityClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
+        $auditEntityClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $entityClass);
         $auditEntity = new $auditEntityClass();
         $auditEntity->exchangeArray($this->getClassProperties($entity));
 
@@ -286,7 +288,7 @@ class LogRevision implements EventSubscriber
                     // Get current inverse revision entity
                     $revisionEntities = $entityManager->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')
                         ->findBy(array(
-                            'targetEntityClass' => get_class($element),
+                            'targetEntityClass' => $this->getEntityClass($element),
                             'entityKeys' => serialize(array('id' => $element->getId())),
                         ), array('id' => 'DESC'), 1);
 
@@ -313,5 +315,15 @@ class LogRevision implements EventSubscriber
             $this->resetRevisionEntities();
             $this->setInAuditTransaction(false);
         }
+    }
+
+    /**
+     * @param $entity
+     * @return string
+     */
+    private function getEntityClass($entity)
+    {
+        $entityClass = get_class($entity);
+        return $entityClass;
     }
 }

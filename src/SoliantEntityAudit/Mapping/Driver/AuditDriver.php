@@ -5,6 +5,7 @@ namespace SoliantEntityAudit\Mapping\Driver;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata
     , Doctrine\Common\Persistence\Mapping\Driver\MappingDriver
     , Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder
+    , Doctrine\ORM\Mapping\MappingException
     ;
 
 final class AuditDriver implements MappingDriver
@@ -80,38 +81,76 @@ final class AuditDriver implements MappingDriver
 
         $auditedClassMetadata = $metadataFactory->getMetadataFor($metadataClass->getAuditedEntityClass());
 
-        $builder->addManyToOne($moduleOptions->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\RevisionEntity');
-# Compound keys removed in favor of auditId (audit_id)
+        try {
+            $builder->addManyToOne($moduleOptions->getRevisionEntityFieldName(), 'SoliantEntityAudit\\Entity\\RevisionEntity');
+        } catch (MappingException $e) {
+            // do nothing
+        }
+
+        // Compound keys removed in favor of auditId (audit_id)
         $identifiers[] = $moduleOptions->getRevisionEntityFieldName();
 
         // Add fields from target to audit entity
         foreach ($auditedClassMetadata->getFieldNames() as $fieldName) {
-            $builder->addField($fieldName, $auditedClassMetadata->getTypeOfField($fieldName), array('nullable' => true, 'quoted' => true));
-            if ($auditedClassMetadata->isIdentifier($fieldName)) $identifiers[] = $fieldName;
+            $fieldMapping = $auditedClassMetadata->getFieldMapping($fieldName);
+
+            if (! isset($fieldMapping['inherited']) && ! isset($fieldMapping['declared'])) {
+                $fieldMapping['nullable'] = true;
+                $fieldMapping['quoted'] = true;
+                $builder->addField($fieldName, $auditedClassMetadata->getTypeOfField($fieldName), $fieldMapping);
+                if ($auditedClassMetadata->isIdentifier($fieldName)) $identifiers[] = $fieldName;
+            }
         }
 
         foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
-            if (!$mapping['isOwningSide']) continue;
+            if (! isset($fieldMapping['inherited']) && ! isset($fieldMapping['declared'])) {
+                if (!$mapping['isOwningSide']) continue;
 
-            if (isset($mapping['joinTable'])) {
-                continue;
-            }
-
-            if (isset($mapping['joinTableColumns'])) {
-                foreach ($mapping['joinTableColumns'] as $field) {
-                    $builder->addField($mapping['fieldName'], 'integer', array('nullable' => true, 'columnName' => $field));
+                if (isset($mapping['joinTable'])) {
+                    continue;
                 }
-            } elseif (isset($mapping['joinColumnFieldNames'])) {
-                foreach ($mapping['joinColumnFieldNames'] as $field) {
-                    $builder->addField($mapping['fieldName'], 'integer', array('nullable' => true, 'columnName' => $field));
-                }
-            } else {
-                throw new \Exception('Unhandled association mapping');
-            }
 
+                if (isset($mapping['joinTableColumns'])) {
+                    foreach ($mapping['joinTableColumns'] as $field) {
+                        $builder->addField($mapping['fieldName'], 'integer', array('nullable' => true, 'columnName' => $field));
+                    }
+                } elseif (isset($mapping['joinColumnFieldNames'])) {
+                    foreach ($mapping['joinColumnFieldNames'] as $field) {
+                        $builder->addField($mapping['fieldName'], 'integer', array('nullable' => true, 'columnName' => $field));
+                    }
+                } else {
+                    throw new \Exception('Unhandled association mapping');
+                }
+            }
         }
 
-        $metadata->setTableName($moduleOptions->getTableNamePrefix() . $auditedClassMetadata->getTableName() . $moduleOptions->getTableNameSuffix());
+        if ($auditedClassMetadata->isInheritanceTypeJoined() || $auditedClassMetadata->isInheritanceTypeSingleTable()) {
+            $metadata->setInheritanceType($auditedClassMetadata->inheritanceType);
+            $metadata->setDiscriminatorColumn($auditedClassMetadata->discriminatorColumn);
+            $parentAuditClasses = array();
+            $subAuditClasses = array();
+
+            foreach ($auditedClassMetadata->parentClasses as $idx => $parentClass) {
+                $parentAuditClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $parentClass);
+                $parentAuditClasses[$idx] = $parentAuditClass;
+            }
+
+            $metadata->setParentClasses($parentAuditClasses);
+
+            foreach ($auditedClassMetadata->subClasses as $idx => $subClass) {
+                $subAuditClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $subClass);
+                $subAuditClasses[$idx] = $subAuditClass;
+            }
+
+            $metadata->setSubClasses($subAuditClasses);
+
+            foreach ($auditedClassMetadata->discriminatorMap as $mapName => $mapClass) {
+                $mapAuditClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $mapClass);
+                $metadata->addDiscriminatorMapClass($mapName, $mapAuditClass);
+            }
+        }
+
+        $metadata->setPrimaryTable(array('name' => $moduleOptions->getTableNamePrefix() . $auditedClassMetadata->getTableName() . $moduleOptions->getTableNameSuffix()));
         $metadata->setIdentifier($identifiers);
 
         return;
@@ -160,6 +199,10 @@ final class AuditDriver implements MappingDriver
      * @return boolean
      */
     function isTransient($className) {
-        return true;
+        $classNames = array(
+            'SoliantEntityAudit\Entity\AbstractAudit'
+        );
+
+        return in_array($className, $classNames);
     }
 }
