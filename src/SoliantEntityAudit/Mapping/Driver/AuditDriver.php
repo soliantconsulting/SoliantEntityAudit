@@ -103,7 +103,7 @@ final class AuditDriver implements MappingDriver
         }
 
         foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
-            if (! isset($fieldMapping['inherited']) && ! isset($fieldMapping['declared'])) {
+            if (! isset($mapping['inherited']) && ! isset($mapping['declared'])) {
                 if (!$mapping['isOwningSide']) continue;
 
                 if (isset($mapping['joinTable'])) {
