@@ -98,8 +98,9 @@ final class AuditDriver implements MappingDriver
                 $fieldMapping['nullable'] = true;
                 $fieldMapping['quoted'] = true;
                 $builder->addField($fieldName, $auditedClassMetadata->getTypeOfField($fieldName), $fieldMapping);
-                if ($auditedClassMetadata->isIdentifier($fieldName)) $identifiers[] = $fieldName;
             }
+
+            if ($auditedClassMetadata->isIdentifier($fieldName)) $identifiers[] = $fieldName;
         }
 
         foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
