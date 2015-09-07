@@ -191,7 +191,7 @@ class ModuleOptions
     }
 
     /**
-     * @param string $softDeletableInterface
+     * @param string $softDeletableInterfaceName
      */
     public function setSoftDeletableInterfaceName($softDeletableInterfaceName)
     {
