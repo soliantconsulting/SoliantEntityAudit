@@ -225,8 +225,8 @@ class LogRevision implements EventSubscriber
         }
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityDeletions() AS $entity) {
-            if (!$moduleOptions->getSoftDeletableInterface()
-                || !in_array($moduleOptions->getSoftDeletableInterface(), class_implements($entity))
+            if (!$moduleOptions->getSoftDeletableInterfaceName()
+                || !in_array($moduleOptions->getSoftDeletableInterfaceName(), class_implements($entity))
             ) {
                 $entities = array_merge($entities, $this->auditEntity($entity, 'DEL'));
             }
