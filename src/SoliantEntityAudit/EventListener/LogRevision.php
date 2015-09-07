@@ -7,6 +7,7 @@ use Doctrine\Common\EventSubscriber
     , Doctrine\ORM\Event\OnFlushEventArgs
     , Doctrine\ORM\Event\PostFlushEventArgs
     , SoliantEntityAudit\Entity\Revision as RevisionEntity
+    , SoliantEntityAudit\Module
     , SoliantEntityAudit\Options\ModuleOptions
     , SoliantEntityAudit\Entity\RevisionEntity as RevisionEntityEntity
     , Zend\Code\Reflection\ClassReflection
@@ -118,7 +119,7 @@ class LogRevision implements EventSubscriber
         if ($this->revision) return;
 
         $revision = new RevisionEntity();
-        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+        $moduleOptions = Module::getModuleOptions();
         if ($moduleOptions->getUser()) $revision->setUser($moduleOptions->getUser());
 
         $comment = $moduleOptions->getAuditService()->getComment();
@@ -160,7 +161,7 @@ class LogRevision implements EventSubscriber
     {
         $auditEntities = array();
 
-        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+        $moduleOptions = Module::getModuleOptions();
         $entityClass = $this->getEntityClass($entity);
 
         if (!in_array($entityClass, array_keys($moduleOptions->getAuditedClassNames())))
@@ -212,7 +213,7 @@ class LogRevision implements EventSubscriber
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
         $entities = array();
-
+        $moduleOptions = Module::getModuleOptions();
         $this->buildRevision();
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityInsertions() AS $entity) {
@@ -224,7 +225,11 @@ class LogRevision implements EventSubscriber
         }
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityDeletions() AS $entity) {
-            $entities = array_merge($entities, $this->auditEntity($entity, 'DEL'));
+            if (!$moduleOptions->getSoftDeletableInterface()
+                || !in_array($moduleOptions->getSoftDeletableInterface(), class_implements($entity))
+            ) {
+                $entities = array_merge($entities, $this->auditEntity($entity, 'DEL'));
+            }
         }
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionDeletions() AS $collectionToDelete) {
@@ -247,7 +252,7 @@ class LogRevision implements EventSubscriber
         if ($this->getEntities() and !$this->getInAuditTransaction()) {
             $this->setInAuditTransaction(true);
 
-            $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+            $moduleOptions = Module::getModuleOptions();
             $entityManager = $moduleOptions->getEntityManager();
             $entityManager->beginTransaction();
 
