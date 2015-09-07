@@ -276,10 +276,17 @@ class LogRevision implements EventSubscriber
 
                 $joinClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
                 $moduleOptions->addJoinClass($joinClassName, $mapping);
+                $revisionEntity = null;
 
                 foreach ($this->many2many as $map) {
-                    if ($map['collection'] == $value)
+                    if ($map['collection'] == $value){
                         $revisionEntity = $map['revisionEntity'];
+                        break;
+                    }
+                }
+
+                if (!$revisionEntity) {
+                    continue;
                 }
 
                 foreach ($value->getSnapshot() as $element) {
