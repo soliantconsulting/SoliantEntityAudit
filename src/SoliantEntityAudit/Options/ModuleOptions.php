@@ -18,6 +18,7 @@ class ModuleOptions
     private $auditService;
     private $userEntityClassName;
     private $authenticationService;
+    private $softDeletableInterfaceName;
 
     public function setDefaults(array $config)
     {
@@ -29,6 +30,7 @@ class ModuleOptions
         $this->setRevisionEntityTableName(isset($config['revisionEntityTableName']) ? $config['revisionEntityTableName']: 'RevisionEntity');
         $this->setUserEntityClassName(isset($config['userEntityClassName']) ? $config['userEntityClassName']: 'ZfcUserDoctrineORM\\Entity\\User');
         $this->setAuthenticationService(isset($config['authenticationService']) ? $config['authenticationService']: 'zfcuser_auth_service');
+        $this->setSoftDeletableInterfaceName(isset($config['softDeletableInterfaceName']) ? $config['softDeletableInterfaceName']: '');
     }
 
     public function getAuditService()
@@ -178,5 +180,21 @@ class ModuleOptions
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSoftDeletableInterfaceName()
+    {
+        return $this->softDeletableInterfaceName;
+    }
+
+    /**
+     * @param string $softDeletableInterfaceName
+     */
+    public function setSoftDeletableInterfaceName($softDeletableInterfaceName)
+    {
+        $this->softDeletableInterfaceName = $softDeletableInterfaceName;
     }
 }

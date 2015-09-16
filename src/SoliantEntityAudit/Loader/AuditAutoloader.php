@@ -166,18 +166,23 @@ class AuditAutoloader extends StandardAutoloader
 
         $auditClass->setNamespaceName("SoliantEntityAudit\\Entity");
         $auditClass->setName(str_replace('\\', '_', $currentClass));
-        $auditClass->setExtendedClass('AbstractAudit');
 
-        #    $auditedClassMetadata = $metadataFactory->getMetadataFor($currentClass);
-        $auditedClassMetadata = $metadataFactory->getMetadataFor($currentClass);
+        // $auditedClassMetadata = $metadataFactory->getMetadataFor($currentClass);
 
-            foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
-                if (isset($mapping['joinTable']['name'])) {
-                    $auditJoinTableClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
-                    $auditEntities[] = $auditJoinTableClassName;
-                    $moduleOptions->addJoinClass($auditJoinTableClassName, $mapping);
-                }
+        if ($auditedClassMetadata->parentClasses) {
+            $auditClass->setExtendedClass(str_replace('\\', '_', array_pop($auditedClassMetadata->parentClasses)));
+
+        } else {
+            $auditClass->setExtendedClass('AbstractAudit');
+        }
+
+        foreach ($auditedClassMetadata->getAssociationMappings() as $mapping) {
+            if (isset($mapping['joinTable']['name'])) {
+                $auditJoinTableClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
+                $auditEntities[] = $auditJoinTableClassName;
+                $moduleOptions->addJoinClass($auditJoinTableClassName, $mapping);
             }
+        }
 
 #        if ($auditClass->getName() == 'AppleConnect_Entity_UserAuthenticationLog') {
 #            echo '<pre>';

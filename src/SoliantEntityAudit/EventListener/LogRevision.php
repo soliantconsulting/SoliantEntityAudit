@@ -7,6 +7,7 @@ use Doctrine\Common\EventSubscriber
     , Doctrine\ORM\Event\OnFlushEventArgs
     , Doctrine\ORM\Event\PostFlushEventArgs
     , SoliantEntityAudit\Entity\Revision as RevisionEntity
+    , SoliantEntityAudit\Module
     , SoliantEntityAudit\Options\ModuleOptions
     , SoliantEntityAudit\Entity\RevisionEntity as RevisionEntityEntity
     , Zend\Code\Reflection\ClassReflection
@@ -118,7 +119,7 @@ class LogRevision implements EventSubscriber
         if ($this->revision) return;
 
         $revision = new RevisionEntity();
-        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+        $moduleOptions = Module::getModuleOptions();
         if ($moduleOptions->getUser()) $revision->setUser($moduleOptions->getUser());
 
         $comment = $moduleOptions->getAuditService()->getComment();
@@ -160,11 +161,13 @@ class LogRevision implements EventSubscriber
     {
         $auditEntities = array();
 
-        $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
-        if (!in_array(get_class($entity), array_keys($moduleOptions->getAuditedClassNames())))
+        $moduleOptions = Module::getModuleOptions();
+        $entityClass = $this->getEntityClass($entity);
+
+        if (!in_array($entityClass, array_keys($moduleOptions->getAuditedClassNames())))
             return array();
 
-        $auditEntityClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', get_class($entity));
+        $auditEntityClass = 'SoliantEntityAudit\\Entity\\' . str_replace('\\', '_', $entityClass);
         $auditEntity = new $auditEntityClass();
         $auditEntity->exchangeArray($this->getClassProperties($entity));
 
@@ -210,7 +213,7 @@ class LogRevision implements EventSubscriber
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
         $entities = array();
-
+        $moduleOptions = Module::getModuleOptions();
         $this->buildRevision();
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityInsertions() AS $entity) {
@@ -222,7 +225,11 @@ class LogRevision implements EventSubscriber
         }
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledEntityDeletions() AS $entity) {
-            $entities = array_merge($entities, $this->auditEntity($entity, 'DEL'));
+            if (!$moduleOptions->getSoftDeletableInterfaceName()
+                || !in_array($moduleOptions->getSoftDeletableInterfaceName(), class_implements($entity))
+            ) {
+                $entities = array_merge($entities, $this->auditEntity($entity, 'DEL'));
+            }
         }
 
         foreach ($eventArgs->getEntityManager()->getUnitOfWork()->getScheduledCollectionDeletions() AS $collectionToDelete) {
@@ -245,7 +252,7 @@ class LogRevision implements EventSubscriber
         if ($this->getEntities() and !$this->getInAuditTransaction()) {
             $this->setInAuditTransaction(true);
 
-            $moduleOptions = \SoliantEntityAudit\Module::getModuleOptions();
+            $moduleOptions = Module::getModuleOptions();
             $entityManager = $moduleOptions->getEntityManager();
             $entityManager->beginTransaction();
 
@@ -274,10 +281,17 @@ class LogRevision implements EventSubscriber
 
                 $joinClassName = "SoliantEntityAudit\\Entity\\" . str_replace('\\', '_', $mapping['joinTable']['name']);
                 $moduleOptions->addJoinClass($joinClassName, $mapping);
+                $revisionEntity = null;
 
                 foreach ($this->many2many as $map) {
-                    if ($map['collection'] == $value)
+                    if ($map['collection'] == $value){
                         $revisionEntity = $map['revisionEntity'];
+                        break;
+                    }
+                }
+
+                if (!$revisionEntity) {
+                    continue;
                 }
 
                 foreach ($value->getSnapshot() as $element) {
@@ -286,7 +300,7 @@ class LogRevision implements EventSubscriber
                     // Get current inverse revision entity
                     $revisionEntities = $entityManager->getRepository('SoliantEntityAudit\\Entity\\RevisionEntity')
                         ->findBy(array(
-                            'targetEntityClass' => get_class($element),
+                            'targetEntityClass' => $this->getEntityClass($element),
                             'entityKeys' => serialize(array('id' => $element->getId())),
                         ), array('id' => 'DESC'), 1);
 
@@ -313,5 +327,15 @@ class LogRevision implements EventSubscriber
             $this->resetRevisionEntities();
             $this->setInAuditTransaction(false);
         }
+    }
+
+    /**
+     * @param $entity
+     * @return string
+     */
+    private function getEntityClass($entity)
+    {
+        $entityClass = get_class($entity);
+        return $entityClass;
     }
 }

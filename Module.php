@@ -32,6 +32,9 @@ class Module
         );
     }
 
+    /**
+     * @param MvcEvent $e
+     */
     public function onBootstrap(MvcEvent $e)
     {
         $moduleOptions = $e->getApplication()->getServiceManager()->get('auditModuleOptions');
@@ -39,11 +42,17 @@ class Module
         self::setModuleOptions($moduleOptions);
     }
 
+    /**
+     * @param ModuleOptions $moduleOptions
+     */
     public static function setModuleOptions(ModuleOptions $moduleOptions)
     {
         self::$moduleOptions = $moduleOptions;
     }
 
+    /**
+     * @return ModuleOptions
+     */
     public static function getModuleOptions()
     {
         return self::$moduleOptions;
